@@ -1,0 +1,48 @@
+[tool.black]
+line-length = 99
+include = '/project$|\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.eggs
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | \.vscode
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+
+[tool.poetry]
+name = "dbt-cloud-jobs"
+version = "0.0.0"
+description = "Define dbt Cloud jobs in YAML"
+authors = ["Padraic Slattery <pgoslatara@gmail.com>"]
+packages = [
+    { include = "dbt_cloud_jobs" },
+]
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.12"
+
+[tool.poetry.dev-dependencies]
+pre-commit = "^3"
+pytest = "*"
+pytest-xdist = "*"
+
+[tool.poetry.group.test.dependencies]
+pytest-cov = "^4.1"
+
+[tool.poetry.scripts]
+dbt_cloud_jobs = "dbt_cloud_jobs.main:main"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
