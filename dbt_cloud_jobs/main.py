@@ -32,7 +32,7 @@ def main() -> None:
         )
 
     try:
-        isinstance(int(args.dbt_account_id), int)
+        dbt_account_id = int(args.dbt_account_id)
     except:
         raise RuntimeError(
             f"The value passed to --dbt_account_id or via the DBT_ACCOUNT_ID env var is not an integer: {args.dbt_account_id}."
@@ -49,8 +49,14 @@ def main() -> None:
 
     logger.debug(f"{job_definitions=}")
     logger.info(f"Found definitions for {len(job_definitions['jobs'])} job(s).")
+
+    if len([x["name"] for x in job_definitions["jobs"]]) != len(
+        {x["name"] for x in job_definitions["jobs"]}
+    ):
+        raise RuntimeError(f"Job names must be unique in `{args.file}`.")
+
     for definition in job_definitions["jobs"]:
-        sync_dbt_cloud_job(account_id=args.dbt_account_id, definition=definition)
+        sync_dbt_cloud_job(account_id=dbt_account_id, definition=definition)
 
 
 if __name__ == "__main__":
