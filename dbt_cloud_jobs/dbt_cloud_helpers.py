@@ -1,6 +1,6 @@
 import os
 from functools import lru_cache
-from typing import Literal, Mapping, Optional, Union
+from typing import List, Literal, Mapping, Optional, Union
 
 import requests
 from requests.auth import AuthBase
@@ -41,12 +41,12 @@ def call_dbt_cloud_api(
         Mapping[str, Union[int, str]]: _description_
     """
 
-    base_url = "https://cloud.getdbt.com/api/v3/"
+    base_url = "https://cloud.getdbt.com/api/v2/"
     if method == "get":
         r = create_requests_session().get(
-            f"{base_url}{endpoint}",
             auth=DbtCloudAuth(),
             params=params,
+            url=f"{base_url}{endpoint}",
         )
 
     try:
@@ -69,3 +69,21 @@ def create_requests_session() -> requests.Session:
 
     logger.info("Creating re-usable requests session...")
     return requests.Session()
+
+
+def list_dbt_cloud_jobs(account_id: int) -> List[Mapping[str, Union[int, str]]]:
+    """
+    Get a list of all existing dbt Cloud jobs
+
+    Args:
+        account_id (int): _description_
+
+    Returns:
+        List[Mapping[str, Union[int, str]]]: _description_
+    """
+
+    # TODO: pagination
+    return call_dbt_cloud_api(
+        method="get",
+        endpoint=f"accounts/{account_id}/jobs/",
+    )["data"]

@@ -1,6 +1,6 @@
 import os
 
-from dbt_cloud_jobs.utils import call_dbt_cloud_api
+from dbt_cloud_jobs.dbt_cloud_helpers import call_dbt_cloud_api
 
 
 def test_dbt_cloud_api_connection() -> None:
