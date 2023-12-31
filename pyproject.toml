@@ -39,7 +39,7 @@ pytest = "*"
 pytest-xdist = "*"
 
 [tool.poetry.group.test.dependencies]
-pytest-cov = "^4.1"
+pytest-cov = "*"
 
 [tool.poetry.scripts]
 dbt_cloud_jobs = "dbt_cloud_jobs.main:main"

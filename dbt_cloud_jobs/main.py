@@ -8,10 +8,12 @@ from dbt_cloud_jobs.logger import logger
 from dbt_cloud_jobs.sync_job import sync_dbt_cloud_job
 
 
-def main() -> None:
+def main(args=None) -> None:
+    logger.info("Running dbt_cloud_jobs...")
+
     parser = argparse.ArgumentParser(description="Create dbt Cloud jobs from a YML file.")
     parser.add_argument(
-        "--dbt_account_id",
+        "--dbt-account-id",
         default=os.getenv("DBT_ACCOUNT_ID"),
         help="The account ID of your dbt Cloud account, can be found in the URL: https://cloud.getdbt.com/develop/<ACCOUNT_ID>/projects/<PROJECT_ID>. Defaults to the value of an environment variable called DBT_ACCOUNT_ID.",
         type=str,
@@ -35,7 +37,7 @@ def main() -> None:
         dbt_account_id = int(args.dbt_account_id)
     except:
         raise RuntimeError(
-            f"The value passed to --dbt_account_id or via the DBT_ACCOUNT_ID env var is not an integer: {args.dbt_account_id}."
+            f"The value passed to --dbt-account-id or via the DBT_ACCOUNT_ID env var is not an integer: {args.dbt_account_id}."
         )
     logger.info(f"Using dbt account id: {args.dbt_account_id}")
 
