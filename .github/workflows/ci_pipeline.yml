@@ -6,6 +6,9 @@ on:
         branches:
             - main
 
+env:
+    DBT_ACCOUNT_ID: ${{ secrets.DBT_ACCOUNT_ID }}
+    DBT_API_TOKEN: ${{ secrets.DBT_API_TOKEN }}
 
 jobs:
     pre-commit:
