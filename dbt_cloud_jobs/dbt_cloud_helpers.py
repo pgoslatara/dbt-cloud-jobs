@@ -76,6 +76,9 @@ def call_dbt_cloud_api(
 
 
 def create_dbt_cloud_job(account_id: int, definition) -> int:  # TODO pydantic class for definition
+    # New jobs require an "id" key in the payload, even though the value of this key does not yet exist
+    definition["id"] = None
+
     logger.debug(f"{definition=}")
     r = call_dbt_cloud_api(
         method="post",

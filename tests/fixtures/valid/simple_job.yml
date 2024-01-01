@@ -1,7 +1,6 @@
 ---
 jobs:
     - name: New job 1.3
-    #   id: # TODO: prevent this from being specified in YAML
       environment_id: 276635
       account_id: 232131
       project_id: 332150
