@@ -110,7 +110,7 @@ def delete_dbt_cloud_job(
         endpoint=f"accounts/{account_id}/jobs/{definition['id']}",
     )
     logger.warning(
-        f"Deleted dbt Cloud job `{definition['name']}`, URL: https://cloud.getdbt.com/deploy/{account_id}/projects/{definition['project_id']}/jobs/{definition['id']}"
+        f"Deleted dbt Cloud job `{definition['name']}` (id: {definition['id']}), URL: https://cloud.getdbt.com/deploy/{account_id}/projects/{definition['project_id']}/jobs/{definition['id']}"
     )
 
 

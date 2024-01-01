@@ -14,6 +14,12 @@ def main(args=None) -> None:
 
     parser = argparse.ArgumentParser(description="Create dbt Cloud jobs from a YML file.")
     parser.add_argument(
+        "--allow-deletes",
+        action="store_true",
+        default=False,
+        help="When passed as a flag, any dbt Cloud job that does not exist in the specified YML file will be deleted.",
+    )
+    parser.add_argument(
         "--dbt-account-id",
         default=os.getenv("DBT_ACCOUNT_ID"),
         help="The account ID of your dbt Cloud account, can be found in the URL: https://cloud.getdbt.com/develop/<ACCOUNT_ID>/projects/<PROJECT_ID>. Defaults to the value of an environment variable called DBT_ACCOUNT_ID.",
@@ -66,7 +72,12 @@ def main(args=None) -> None:
     existing_jobs = list_dbt_cloud_jobs(account_id=dbt_account_id)
     for definition in existing_jobs:
         if definition["name"] not in [job["name"] for job in job_definitions["jobs"]]:
-            delete_dbt_cloud_job(account_id=dbt_account_id, definition=definition)
+            if args.allow_deletes:
+                delete_dbt_cloud_job(account_id=dbt_account_id, definition=definition)
+            else:
+                logger.warning(
+                    f"Job `{definition['name']}` (id: {definition['id']}) exists in dbt Cloud but not in `{args.file}`. Pass `--allow-deletes` to delete this job from dbt Cloud."
+                )
 
 
 if __name__ == "__main__":
