@@ -89,7 +89,7 @@ jobs:
 
             - name: Run pytest
               run: |
-                  poetry run pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=dbt_cloud_jobs/ ./tests --numprocesses 5 | tee pytest-coverage.txt && exit ${PIPESTATUS[0]}
+                  poetry run pytest --junitxml=coverage.xml --cov-report=term-missing:skip-covered --cov=dbt_cloud_jobs/ ./tests --numprocesses 5 | tee pytest-coverage.txt && exit ${PIPESTATUS[0]}
 
             - name: Pytest coverage comment
               if: matrix.python-version == '3.11'
@@ -98,4 +98,4 @@ jobs:
                   pytest-coverage-path: ./pytest-coverage.txt
                   title: Coverage Report
                   badge-title: Coverage
-                  junitxml-path: ./pytest.xml
+                  junitxml-path: ./coverage.xml
