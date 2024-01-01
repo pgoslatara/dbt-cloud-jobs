@@ -1,18 +1,23 @@
 ---
 jobs:
     - name: New job 1.3
-      id:
+    #   id: # TODO: prevent this from being specified in YAML
       environment_id: 276635
       account_id: 232131
       project_id: 332150
       dbt_version:
       triggers:
-          schedule: false
-          custom_branch_only: false
           github_webhook: false
+          schedule: false
       execute_steps:
           - dbt run
-      schedule:
+      schedule: # TODO: prevent this from being NULL, dbt Cloud forces default value
+          cron: 0 * * * *
+          date:
+              type: every_day
+          time:
+              type: every_hour
+              interval: 1
       settings:
           threads: 1
           target_name: default
