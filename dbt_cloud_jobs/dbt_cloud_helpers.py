@@ -24,7 +24,7 @@ class DbtCloudAuth(AuthBase):
 
 
 def call_dbt_cloud_api(
-    method: Literal["get", "post"],
+    method: Literal["delete", "get", "post"],
     endpoint: str,
     params: Optional[Mapping[str, Union[int, str]]] = None,
     payload: Optional[Mapping[str, Union[int, str]]] = None,
@@ -59,6 +59,11 @@ def call_dbt_cloud_api(
             json=payload,
             url=f"{base_url}{endpoint}",
         )
+    elif method == "delete":
+        r = create_requests_session().delete(
+            auth=DbtCloudAuth(),
+            url=f"{base_url}{endpoint}",
+        )
 
     try:
         r.raise_for_status()
@@ -78,7 +83,7 @@ def create_dbt_cloud_job(account_id: int, definition) -> int:  # TODO pydantic c
         payload=definition,
     )
     logger.info(
-        f"Created new dbt Cloud job, URL: https://cloud.getdbt.com/deploy/{account_id}/projects/{definition['environment_id']}/jobs/{r['data']['id']}"
+        f"Created new dbt Cloud job, URL: https://cloud.getdbt.com/deploy/{account_id}/projects/{definition['project_id']}/jobs/{r['data']['id']}"
     )
     return r["data"]["id"]
 
@@ -94,6 +99,19 @@ def create_requests_session() -> requests.Session:
 
     logger.info("Creating re-usable requests session...")
     return requests.Session()
+
+
+def delete_dbt_cloud_job(
+    account_id: int, definition
+) -> None:  # TODO pydantic class for definition
+    logger.debug(f"{definition=}")
+    call_dbt_cloud_api(
+        method="delete",
+        endpoint=f"accounts/{account_id}/jobs/{definition['id']}",
+    )
+    logger.warning(
+        f"Deleted dbt Cloud job `{definition['name']}`, URL: https://cloud.getdbt.com/deploy/{account_id}/projects/{definition['project_id']}/jobs/{definition['id']}"
+    )
 
 
 def list_dbt_cloud_jobs(account_id: int) -> List[Mapping[str, Union[int, str]]]:

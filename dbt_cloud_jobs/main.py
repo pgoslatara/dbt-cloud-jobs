@@ -4,6 +4,7 @@ from pathlib import Path
 
 import yaml
 
+from dbt_cloud_jobs.dbt_cloud_helpers import delete_dbt_cloud_job, list_dbt_cloud_jobs
 from dbt_cloud_jobs.logger import logger
 from dbt_cloud_jobs.sync_job import sync_dbt_cloud_job
 
@@ -57,8 +58,15 @@ def main(args=None) -> None:
     ):
         raise RuntimeError(f"Job names must be unique in `{args.file}`.")
 
+    # New jobs and jobs that need updating
     for definition in job_definitions["jobs"]:
         sync_dbt_cloud_job(account_id=dbt_account_id, definition=definition)
+
+    # Remove jobs no longer present in the YML file
+    existing_jobs = list_dbt_cloud_jobs(account_id=dbt_account_id)
+    for definition in existing_jobs:
+        if definition["name"] not in [job["name"] for job in job_definitions["jobs"]]:
+            delete_dbt_cloud_job(account_id=dbt_account_id, definition=definition)
 
 
 if __name__ == "__main__":
