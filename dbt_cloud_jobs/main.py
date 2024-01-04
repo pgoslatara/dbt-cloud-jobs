@@ -1,4 +1,5 @@
 import argparse
+import inspect
 import os
 from pathlib import Path
 
@@ -12,6 +13,7 @@ from dbt_cloud_jobs.sync_job import sync_dbt_cloud_job
 def main(args=None) -> None:
     logger.info("Running dbt_cloud_jobs...")
 
+    logger.error(f"{args}")
     parser = argparse.ArgumentParser(description="Create dbt Cloud jobs from a YML file.")
     parser.add_argument(
         "--allow-deletes",
@@ -32,7 +34,13 @@ def main(args=None) -> None:
         help="The name of the YML file containing the dbt Cloud job definitions. Defaults to `dbt_cloud_jobs.yml`.",
         type=str,
     )
-    args = parser.parse_args()
+
+    # Determining how function is called
+    if inspect.stack()[1].code_context[0].strip() == "sys.exit(main())":
+        args = parser.parse_args()
+        caller = "cli"
+    else:
+        caller = "direct"  # i.e. pytest
 
     # Ensure the dbt account id is set and is valid
     if not args.dbt_account_id:
