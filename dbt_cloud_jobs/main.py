@@ -14,7 +14,6 @@ from dbt_cloud_jobs.sync_job import sync_dbt_cloud_job
 def main(args=None) -> None:
     logger.info("Running dbt_cloud_jobs...")
 
-    logger.error(f"{args}")
     parser = argparse.ArgumentParser(description="Create dbt Cloud jobs from a YML file.")
     parser.add_argument(
         "--allow-deletes",
