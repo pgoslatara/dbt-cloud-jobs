@@ -29,11 +29,10 @@ def main(args=None) -> None:
     )
 
     # Determining how function is called
-    if inspect.stack()[1].code_context[0].strip() == "sys.exit(main())":
+    if (
+        inspect.stack()[1].code_context[0].strip() == "sys.exit(main())"
+    ):  # Not true when pytest calls main()
         args = parser.parse_args()
-        caller = "cli"
-    else:
-        caller = "direct"  # i.e. pytest
 
     # Ensure yml file exists
     if not Path(args.file).exists():
