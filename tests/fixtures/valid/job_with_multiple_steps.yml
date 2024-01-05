@@ -1,11 +1,12 @@
 ---
 jobs:
-    - name: Simple job
+    - name: Job with multiple steps
       account_id: 123
       dbt_version: # TODO: prevent being NULL
       environment_id: 123
       execute_steps:
           - dbt run
+          - dbt test
       project_id: 123
       schedule: # TODO: prevent this from being NULL, dbt Cloud forces default value
           cron: 0 * * * *

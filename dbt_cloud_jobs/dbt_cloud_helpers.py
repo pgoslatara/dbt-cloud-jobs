@@ -127,6 +127,8 @@ def list_dbt_cloud_jobs(account_id: int) -> List[Mapping[str, Union[int, str]]]:
         List[Mapping[str, Union[int, str]]]: _description_
     """
 
+    logger.info(f"Listing dbt Cloud jobs for account id {account_id}...")
+
     # TODO: pagination
     return call_dbt_cloud_api(
         method="get",

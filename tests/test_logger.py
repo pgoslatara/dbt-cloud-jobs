@@ -3,7 +3,7 @@ from argparse import Namespace
 from pathlib import Path
 
 import pytest
-from conftest import catch_logs, records_to_tuples
+from pytest_helpers import catch_logs, records_to_tuples
 
 from dbt_cloud_jobs.logger import logger
 from dbt_cloud_jobs.main import main
