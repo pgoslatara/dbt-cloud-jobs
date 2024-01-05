@@ -6,6 +6,7 @@ from pathlib import Path
 import yaml
 
 from dbt_cloud_jobs.dbt_cloud_helpers import delete_dbt_cloud_job, list_dbt_cloud_jobs
+from dbt_cloud_jobs.exceptions import DuplicateJobNameError
 from dbt_cloud_jobs.logger import logger
 from dbt_cloud_jobs.sync_job import sync_dbt_cloud_job
 
@@ -70,7 +71,7 @@ def main(args=None) -> None:
     if len([x["name"] for x in job_definitions["jobs"]]) != len(
         {x["name"] for x in job_definitions["jobs"]}
     ):
-        raise RuntimeError(f"Job names must be unique in `{args.file}`.")
+        raise DuplicateJobNameError(f"Job names must be unique in `{args.file}`.")
 
     # New jobs and jobs that need updating
     for definition in job_definitions["jobs"]:
