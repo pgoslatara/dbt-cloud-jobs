@@ -75,18 +75,18 @@ def call_dbt_cloud_api(
     return r.json()
 
 
-def create_dbt_cloud_job(account_id: int, definition) -> int:  # TODO pydantic class for definition
+def create_dbt_cloud_job(definition) -> int:  # TODO pydantic class for definition
     # New jobs require an "id" key in the payload, even though the value of this key does not yet exist
     definition["id"] = None
 
     logger.debug(f"{definition=}")
     r = call_dbt_cloud_api(
         method="post",
-        endpoint=f"accounts/{account_id}/jobs/",
+        endpoint=f"accounts/{definition['account_id']}/jobs/",
         payload=definition,
     )
     logger.info(
-        f"Created new dbt Cloud job, URL: https://cloud.getdbt.com/deploy/{account_id}/projects/{definition['project_id']}/jobs/{r['data']['id']}"
+        f"Created new dbt Cloud job, URL: https://cloud.getdbt.com/deploy/{definition['account_id']}/projects/{definition['project_id']}/jobs/{r['data']['id']}"
     )
     return r["data"]["id"]
 
@@ -104,19 +104,18 @@ def create_requests_session() -> requests.Session:
     return requests.Session()
 
 
-def delete_dbt_cloud_job(
-    account_id: int, definition
-) -> None:  # TODO pydantic class for definition
+def delete_dbt_cloud_job(definition) -> None:  # TODO pydantic class for definition
     logger.debug(f"{definition=}")
     call_dbt_cloud_api(
         method="delete",
-        endpoint=f"accounts/{account_id}/jobs/{definition['id']}",
+        endpoint=f"accounts/{definition['account_id']}/jobs/{definition['id']}",
     )
     logger.warning(
-        f"Deleted dbt Cloud job `{definition['name']}` (id: {definition['id']}), URL: https://cloud.getdbt.com/deploy/{account_id}/projects/{definition['project_id']}/jobs/{definition['id']}"
+        f"Deleted dbt Cloud job `{definition['name']}` (id: {definition['id']}), URL: https://cloud.getdbt.com/deploy/{definition['account_id']}/projects/{definition['project_id']}/jobs/{definition['id']}"
     )
 
 
+@lru_cache
 def list_dbt_cloud_jobs(account_id: int) -> List[Mapping[str, Union[int, str]]]:
     """
     Get a list of all existing dbt Cloud jobs

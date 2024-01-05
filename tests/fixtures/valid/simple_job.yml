@@ -1,6 +1,6 @@
 ---
 jobs:
-    - name: New job 1.3
+    - name: New job 1.4
       account_id: 232131
       dbt_version: # TODO: prevent being NULL
       environment_id: 276635
@@ -8,7 +8,7 @@ jobs:
           - dbt run
       project_id: 332150
       schedule: # TODO: prevent this from being NULL, dbt Cloud forces default value
-          cron: 0 * * * *
+          cron: 0 1 * * *
           date:
               type: every_day
           time:

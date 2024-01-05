@@ -9,9 +9,9 @@ from dbt_cloud_jobs.logger import logger
 from dbt_cloud_jobs.utils import merge_dicts
 
 
-def sync_dbt_cloud_job(account_id: int, definition: Mapping[str, Union[int, str]]) -> None:
+def sync_dbt_cloud_job(definition: Mapping[str, Union[int, str]]) -> None:
     existing_jobs = list_dbt_cloud_jobs(
-        account_id=account_id
+        account_id=definition["account_id"]
     )  # TODO: move outside function or else cache results
 
     # Jobs that are new or need updating
@@ -29,12 +29,12 @@ def sync_dbt_cloud_job(account_id: int, definition: Mapping[str, Union[int, str]
         else:
             call_dbt_cloud_api(
                 method="post",
-                endpoint=f"accounts/{account_id}/jobs/{updated_definition['id']}",
+                endpoint=f"accounts/{updated_definition['account_id']}/jobs/{updated_definition['id']}",
                 payload=updated_definition,
             )
             logger.info(
-                f"Updated dbt Cloud job, URL: https://cloud.getdbt.com/deploy/{account_id}/projects/{updated_definition['project_id']}/jobs/{updated_definition['id']}"
+                f"Updated dbt Cloud job, URL: https://cloud.getdbt.com/deploy/{definition['account_id']}/projects/{updated_definition['project_id']}/jobs/{updated_definition['id']}"
             )
     else:
         logger.info(f"Job `{definition['name']}` does not exist, creating...")
-        create_dbt_cloud_job(account_id=account_id, definition=definition)
+        create_dbt_cloud_job(definition=definition)
