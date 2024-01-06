@@ -115,7 +115,6 @@ def delete_dbt_cloud_job(definition) -> None:  # TODO pydantic class for definit
     )
 
 
-@lru_cache
 def list_dbt_cloud_jobs(account_id: int) -> List[Mapping[str, Union[int, str]]]:
     """
     Get a list of all existing dbt Cloud jobs

@@ -20,11 +20,15 @@ def sync_dbt_cloud_job(definition: Mapping[str, Union[int, str]]) -> None:
 
         existing_definition = [x for x in existing_jobs if x["name"] == definition["name"]][0]
         logger.debug(f"{existing_definition=}")
+
+        # definitions in YML don't contain id values, need to set manually to avoid comparison never returning True
+        definition["id"] = existing_definition["id"]
+
         updated_definition = merge_dicts(existing_definition, definition)
         logger.debug(f"{updated_definition=}")
         if updated_definition == existing_definition:
             logger.info(
-                f"Defintion of job `{existing_definition['name']}` (id: {existing_definition['id']}) has not changed, will not be updated."
+                f"Definition of job `{existing_definition['name']}` (id: {existing_definition['id']}) has not changed, will not be updated."
             )
         else:
             call_dbt_cloud_api(

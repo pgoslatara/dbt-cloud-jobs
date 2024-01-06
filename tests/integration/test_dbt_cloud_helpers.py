@@ -25,14 +25,13 @@ def test_delete_dbt_cloud_job() -> None:
     with Path.open(Path("./tests/fixtures/valid/job_with_multiple_steps.yml"), "r") as f:
         definitions = yaml.safe_load(f)
 
-    job_name = definitions["jobs"][0]["name"]
-
     job_id = create_dbt_cloud_job(
         definition=hydrate_job_definition(definition=definitions["jobs"][0])
     )
-    assert job_name in [x["name"] for x in list_dbt_cloud_jobs(os.getenv("DBT_ACCOUNT_ID"))]
+    assert definitions["jobs"][0]["name"] in [
+        x["name"] for x in list_dbt_cloud_jobs(os.getenv("DBT_ACCOUNT_ID"))
+    ]
 
-    list_dbt_cloud_jobs.cache_clear()
     existing_jobs = list_dbt_cloud_jobs(os.getenv("DBT_ACCOUNT_ID"))
     delete_dbt_cloud_job(
         definition=hydrate_job_definition(
@@ -40,7 +39,6 @@ def test_delete_dbt_cloud_job() -> None:
         )
     )
 
-    list_dbt_cloud_jobs.cache_clear()
     assert job_id not in [x["id"] for x in list_dbt_cloud_jobs(os.getenv("DBT_ACCOUNT_ID"))]
 
 
