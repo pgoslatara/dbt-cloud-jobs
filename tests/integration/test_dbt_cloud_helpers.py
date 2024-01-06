@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 import yaml
 from pytest_helpers import hydrate_job_definition
@@ -11,7 +12,7 @@ from dbt_cloud_jobs.dbt_cloud_helpers import (
 
 
 def test_create_dbt_cloud_job() -> None:
-    with open("./tests/fixtures/valid/simple_job.yml") as f:
+    with Path.open(Path("./tests/fixtures/valid/simple_job.yml"), "r") as f:
         definitions = yaml.safe_load(f)
 
     create_dbt_cloud_job(definition=hydrate_job_definition(definition=definitions["jobs"][0]))
@@ -21,7 +22,7 @@ def test_create_dbt_cloud_job() -> None:
 
 
 def test_delete_dbt_cloud_job() -> None:
-    with open("./tests/fixtures/valid/job_with_multiple_steps.yml") as f:
+    with Path.open(Path("./tests/fixtures/valid/job_with_multiple_steps.yml"), "r") as f:
         definitions = yaml.safe_load(f)
 
     job_name = definitions["jobs"][0]["name"]

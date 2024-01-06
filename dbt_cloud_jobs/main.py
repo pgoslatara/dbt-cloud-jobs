@@ -39,7 +39,7 @@ def main(args=None) -> None:
         raise FileNotFoundError(f"{args.file} does not exists.")
 
     logger.info(f"Using definitions files: {args.file}")
-    with Path.open(args.file) as f:
+    with Path.open(Path(args.file)) as f:
         job_definitions = yaml.safe_load(f)
 
     logger.debug(f"{job_definitions=}")
