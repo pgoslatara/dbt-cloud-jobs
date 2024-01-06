@@ -31,6 +31,7 @@ def catch_logs(level: int, logger: logging.Logger) -> LogCaptureHandler:
 
 
 def hydrate_job_definition(definition: dict) -> dict:  # TODO: pydantic class
+    definition = definition.copy()
     definition["account_id"] = int(os.getenv("DBT_ACCOUNT_ID"))
     definition["environment_id"] = int(os.getenv("DBT_ENVIRONMENT_ID"))
     definition["name"] = f"{job_prefix()}_{definition['name']}_{int(random() * 1000000)}"
