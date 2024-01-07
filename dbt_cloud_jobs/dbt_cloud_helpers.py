@@ -129,7 +129,10 @@ def list_dbt_cloud_jobs(account_id: int) -> List[Mapping[str, Union[int, str]]]:
     logger.info(f"Listing dbt Cloud jobs for account id {account_id}...")
 
     # TODO: pagination
-    return call_dbt_cloud_api(
+    jobs = call_dbt_cloud_api(
         method="get",
         endpoint=f"accounts/{account_id}/jobs/",
     )["data"]
+    logger.info(f"Found {len(jobs)} jobs...")
+
+    return jobs

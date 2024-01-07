@@ -6,6 +6,7 @@ import yaml
 from pytest_helpers import hydrate_job_definition
 
 from dbt_cloud_jobs.dbt_cloud_helpers import list_dbt_cloud_jobs
+from dbt_cloud_jobs.logger import logger
 from dbt_cloud_jobs.main import main
 
 
@@ -21,6 +22,7 @@ def test_main_remove_job_allow_deletes_false(caplog):
     with Path.open(Path(file.name), "r") as f:
         definitions = yaml.safe_load(f)
 
+    logger.info("Calling main() with allow_deletes=False, expecting 2 jobs to be created...")
     main(Namespace(allow_deletes=False, file=file.name))
 
     assert definition_1["name"] in [
@@ -44,6 +46,9 @@ def test_main_remove_job_allow_deletes_false(caplog):
     with Path.open(Path(file.name), "r") as f:
         definitions = yaml.safe_load(f)
 
+    logger.info(
+        "Calling main() with allow_deletes=False, expecting 1 job to be unchanged and 1 job to be listed for deletion..."
+    )
     main(Namespace(allow_deletes=False, file=file.name))
 
     assert definition_1["name"] in [
@@ -78,6 +83,7 @@ def test_main_remove_job_allow_deletes_false(caplog):
     with Path.open(Path(file.name), "r") as f:
         definitions = yaml.safe_load(f)
 
+    logger.info("Calling main() with allow_deletes=False, expecting 2 jobs to be created...")
     main(Namespace(allow_deletes=False, file=file.name))
 
     assert definition_1["name"] in [
@@ -101,6 +107,9 @@ def test_main_remove_job_allow_deletes_false(caplog):
     with Path.open(Path(file.name), "r") as f:
         definitions = yaml.safe_load(f)
 
+    logger.info(
+        "Calling main() with allow_deletes=True, expecting 1 job to be unchanged and 1 job to be listed for deletion..."
+    )
     main(Namespace(allow_deletes=True, file=file.name))
 
     assert definition_1["name"] in [
@@ -128,6 +137,7 @@ def test_main_simple_job(caplog):
     with Path.open(Path(file.name), "r") as f:
         definitions = yaml.safe_load(f)
 
+    logger.info("Calling main() with allow_deletes=False, expecting 1 job to be created...")
     main(Namespace(allow_deletes=False, file=file.name))
 
     assert definition["name"] in [
