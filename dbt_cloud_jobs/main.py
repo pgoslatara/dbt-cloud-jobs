@@ -38,6 +38,8 @@ def main(args=None) -> None:
     else:
         caller = "pytest"
 
+    logger.error(f"{caller=}")
+
     # Ensure yml file exists
     if not Path(args.file).exists():
         raise FileNotFoundError(f"{args.file} does not exists.")
@@ -65,12 +67,9 @@ def main(args=None) -> None:
             if job["name"] not in [
                 job["name"] for job in job_definitions["jobs"] if job["account_id"] == account_id
             ]:
-                if args.allow_deletes and caller == "cli":
-                    delete_dbt_cloud_job(definition=job)
-                elif (
-                    args.allow_deletes
-                    and caller == "pytest"
-                    and definition["name"].startswith(job_prefix())
+                if args.allow_deletes and (
+                    caller == "cli"
+                    or (caller == "pytest" and job["name"].startswith(job_prefix()))
                 ):
                     delete_dbt_cloud_job(definition=job)
                 else:

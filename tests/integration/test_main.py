@@ -125,6 +125,8 @@ def test_main_remove_job_allow_deletes_false(caplog):
         in caplog.text
     )
 
+    assert 1 == 2
+
 
 def test_main_simple_job(caplog):
     with Path.open(Path("./tests/fixtures/valid/simple_job.yml"), "r") as file:
