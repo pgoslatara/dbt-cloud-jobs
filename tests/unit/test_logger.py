@@ -12,7 +12,7 @@ from dbt_cloud_jobs.main import main
 def test_logger_debug(file_definition_valid: Path) -> None:
     with catch_logs(level=logging.DEBUG, logger=logger) as handler:
         with pytest.raises(RuntimeError) as e:
-            main(Namespace(file=file_definition_valid))
+            main(Namespace(file=file_definition_valid, sync=True))
 
         assert (
             len(
@@ -29,6 +29,6 @@ def test_logger_debug(file_definition_valid: Path) -> None:
 def test_logger_info(caplog, file_definition_valid: Path) -> None:
     caplog.set_level(logging.INFO)
     with pytest.raises(RuntimeError) as e:
-        main(Namespace(file=file_definition_valid))
+        main(Namespace(file=file_definition_valid, sync=True))
 
     assert "Running dbt_cloud_jobs..." in caplog.text

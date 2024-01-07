@@ -23,7 +23,7 @@ def test_main_remove_job_allow_deletes_false(caplog):
         definitions = yaml.safe_load(f)
 
     logger.info("Calling main() with allow_deletes=False, expecting 2 jobs to be created...")
-    main(Namespace(allow_deletes=False, file=file.name))
+    main(Namespace(allow_deletes=False, file=file.name, sync=True))
 
     assert definition_1["name"] in [
         x["name"] for x in list_dbt_cloud_jobs(account_id=definition_1["account_id"])
@@ -49,7 +49,7 @@ def test_main_remove_job_allow_deletes_false(caplog):
     logger.info(
         "Calling main() with allow_deletes=False, expecting 1 job to be unchanged and 1 job to be listed for deletion..."
     )
-    main(Namespace(allow_deletes=False, file=file.name))
+    main(Namespace(allow_deletes=False, file=file.name, sync=True))
 
     assert definition_1["name"] in [
         x["name"] for x in list_dbt_cloud_jobs(account_id=definition_1["account_id"])
@@ -84,7 +84,7 @@ def test_main_remove_job_allow_deletes_false(caplog):
         definitions = yaml.safe_load(f)
 
     logger.info("Calling main() with allow_deletes=False, expecting 2 jobs to be created...")
-    main(Namespace(allow_deletes=False, file=file.name))
+    main(Namespace(allow_deletes=False, file=file.name, sync=True))
 
     assert definition_1["name"] in [
         x["name"] for x in list_dbt_cloud_jobs(account_id=definition_1["account_id"])
@@ -110,7 +110,7 @@ def test_main_remove_job_allow_deletes_false(caplog):
     logger.info(
         "Calling main() with allow_deletes=True, expecting 1 job to be unchanged and 1 job to be listed for deletion..."
     )
-    main(Namespace(allow_deletes=True, file=file.name))
+    main(Namespace(allow_deletes=True, file=file.name, sync=True))
 
     assert definition_1["name"] in [
         x["name"] for x in list_dbt_cloud_jobs(account_id=definition_1["account_id"])
@@ -138,10 +138,49 @@ def test_main_simple_job(caplog):
         definitions = yaml.safe_load(f)
 
     logger.info("Calling main() with allow_deletes=False, expecting 1 job to be created...")
-    main(Namespace(allow_deletes=False, file=file.name))
+    main(Namespace(allow_deletes=False, file=file.name, sync=True))
 
     assert definition["name"] in [
         x["name"] for x in list_dbt_cloud_jobs(account_id=definition["account_id"])
     ]
     assert f"Using definitions files: {file.name}" in caplog.text
     assert f"Found definitions for 1 job(s)." in caplog.text
+
+
+def test_main_sync_false(caplog):
+    with Path.open(Path("./tests/fixtures/valid/simple_job.yml"), "r") as file:
+        definitions = yaml.safe_load(file)
+
+    definition = hydrate_job_definition(definitions["jobs"][0])
+    file = NamedTemporaryFile()
+    file.write(bytes(yaml.dump({"jobs": [definition]}), encoding="utf-8"))
+    file.seek(0)
+    with Path.open(Path(file.name), "r") as f:
+        definitions = yaml.safe_load(f)
+
+    logger.info("Calling main() with sync=False...")
+    main(Namespace(file=file.name, sync=False))
+
+    assert definition["name"] not in [
+        x["name"] for x in list_dbt_cloud_jobs(account_id=definition["account_id"])
+    ]
+    assert f"Pass `--sync` to sync the jobs defined in `{file.name}` to dbt Cloud." in caplog.text
+
+
+def test_main_sync_true(caplog):
+    with Path.open(Path("./tests/fixtures/valid/simple_job.yml"), "r") as file:
+        definitions = yaml.safe_load(file)
+
+    definition = hydrate_job_definition(definitions["jobs"][0])
+    file = NamedTemporaryFile()
+    file.write(bytes(yaml.dump({"jobs": [definition]}), encoding="utf-8"))
+    file.seek(0)
+    with Path.open(Path(file.name), "r") as f:
+        definitions = yaml.safe_load(f)
+
+    logger.info("Calling main() with sync=True...")
+    main(Namespace(file=file.name, sync=True))
+
+    assert definition["name"] in [
+        x["name"] for x in list_dbt_cloud_jobs(account_id=definition["account_id"])
+    ]
