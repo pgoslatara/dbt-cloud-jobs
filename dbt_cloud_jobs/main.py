@@ -8,6 +8,7 @@ from dbt_cloud_jobs.dbt_cloud_helpers import delete_dbt_cloud_job, list_dbt_clou
 from dbt_cloud_jobs.exceptions import DuplicateJobNameError
 from dbt_cloud_jobs.logger import logger
 from dbt_cloud_jobs.sync_job import sync_dbt_cloud_job
+from tests.pytest_helpers import job_prefix
 
 
 def main(args=None) -> None:
@@ -33,6 +34,9 @@ def main(args=None) -> None:
         inspect.stack()[1].code_context[0].strip() == "sys.exit(main())"
     ):  # Not true when pytest calls main()
         args = parser.parse_args()
+        caller = "cli"
+    else:
+        caller = "pytest"
 
     # Ensure yml file exists
     if not Path(args.file).exists():
@@ -61,7 +65,13 @@ def main(args=None) -> None:
             if job["name"] not in [
                 job["name"] for job in job_definitions["jobs"] if job["account_id"] == account_id
             ]:
-                if args.allow_deletes:
+                if args.allow_deletes and caller == "cli":
+                    delete_dbt_cloud_job(definition=job)
+                elif (
+                    args.allow_deletes
+                    and caller == "pytest"
+                    and definition["name"].startswith(job_prefix())
+                ):
                     delete_dbt_cloud_job(definition=job)
                 else:
                     logger.warning(
