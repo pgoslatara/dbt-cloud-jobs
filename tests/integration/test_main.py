@@ -1,3 +1,4 @@
+import os
 from argparse import Namespace
 from pathlib import Path
 from tempfile import NamedTemporaryFile
@@ -10,7 +11,42 @@ from dbt_cloud_jobs.logger import logger
 from dbt_cloud_jobs.main import main
 
 
-def test_main_remove_job_allow_deletes_false(caplog):
+def test_main_import_true(request, tmp_path):
+    file = Path(tmp_path / f"{request.node.name}.yml")
+    assert file.exists() is False
+
+    logger.info("Calling main() with import=True...")
+    main(Namespace(account_id=os.getenv("DBT_ACCOUNT_ID"), file=file, import_=True))
+
+    assert file.exists()
+
+    with Path.open(file, "r") as f:
+        definitions = yaml.safe_load(f)
+
+    assert isinstance(definitions["jobs"], list)
+
+
+def test_main_sync_false(caplog):
+    with Path.open(Path("./tests/fixtures/valid/simple_job.yml"), "r") as file:
+        definitions = yaml.safe_load(file)
+
+    definition = hydrate_job_definition(definitions["jobs"][0])
+    file = NamedTemporaryFile()
+    file.write(bytes(yaml.dump({"jobs": [definition]}), encoding="utf-8"))
+    file.seek(0)
+    with Path.open(Path(file.name), "r") as f:
+        definitions = yaml.safe_load(f)
+
+    logger.info("Calling main() with sync=False...")
+    main(Namespace(file=file.name, sync=False))
+
+    assert definition["name"] not in [
+        x["name"] for x in list_dbt_cloud_jobs(account_id=definition["account_id"])
+    ]
+    assert f"Pass `--sync` to sync the jobs defined in `{file.name}` to dbt Cloud." in caplog.text
+
+
+def test_main_sync_remove_job_allow_deletes_false(caplog):
     with Path.open(Path("./tests/fixtures/valid/simple_job.yml"), "r") as file:
         definitions = yaml.safe_load(file)
 
@@ -71,7 +107,7 @@ def test_main_remove_job_allow_deletes_false(caplog):
     )
 
 
-def test_main_remove_job_allow_deletes_false(caplog):
+def test_main_sync_remove_job_allow_deletes_true(caplog):
     with Path.open(Path("./tests/fixtures/valid/simple_job.yml"), "r") as file:
         definitions = yaml.safe_load(file)
 
@@ -126,7 +162,7 @@ def test_main_remove_job_allow_deletes_false(caplog):
     )
 
 
-def test_main_simple_job(caplog):
+def test_main_sync_simple_job(caplog):
     with Path.open(Path("./tests/fixtures/valid/simple_job.yml"), "r") as file:
         definitions = yaml.safe_load(file)
 
@@ -147,27 +183,7 @@ def test_main_simple_job(caplog):
     assert f"Found definitions for 1 job(s)." in caplog.text
 
 
-def test_main_sync_false(caplog):
-    with Path.open(Path("./tests/fixtures/valid/simple_job.yml"), "r") as file:
-        definitions = yaml.safe_load(file)
-
-    definition = hydrate_job_definition(definitions["jobs"][0])
-    file = NamedTemporaryFile()
-    file.write(bytes(yaml.dump({"jobs": [definition]}), encoding="utf-8"))
-    file.seek(0)
-    with Path.open(Path(file.name), "r") as f:
-        definitions = yaml.safe_load(f)
-
-    logger.info("Calling main() with sync=False...")
-    main(Namespace(file=file.name, sync=False))
-
-    assert definition["name"] not in [
-        x["name"] for x in list_dbt_cloud_jobs(account_id=definition["account_id"])
-    ]
-    assert f"Pass `--sync` to sync the jobs defined in `{file.name}` to dbt Cloud." in caplog.text
-
-
-def test_main_sync_true(caplog):
+def test_main_sync_true():
     with Path.open(Path("./tests/fixtures/valid/simple_job.yml"), "r") as file:
         definitions = yaml.safe_load(file)
 
