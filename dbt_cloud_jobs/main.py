@@ -62,14 +62,9 @@ def main(args=None) -> None:
         caller = "pytest"
         # Set default values if necessary
         passed_args = [x[0] for x in args._get_kwargs()]
-        if "account_id" not in passed_args:
-            args.account_id = None
-        if "allow_deletes" not in passed_args:
-            args.allow_deletes = False
-        if "import_" not in passed_args:
-            args.import_ = False
-        if "sync" not in passed_args:
-            args.sync = False
+        for arg in parser._actions:
+            if arg.dest not in passed_args:
+                setattr(args, arg.dest, arg.default)
 
     # Verify supplied arguments are valid
     if args.account_id is None and args.import_:
