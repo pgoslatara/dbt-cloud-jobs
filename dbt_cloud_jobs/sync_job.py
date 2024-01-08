@@ -1,6 +1,6 @@
 from typing import Mapping, Union
 
-from dbt_cloud_jobs.dbt_cloud_helpers import (
+from dbt_cloud_jobs.dbt_api_helpers import (
     call_dbt_cloud_api,
     create_dbt_cloud_job,
     list_dbt_cloud_jobs,

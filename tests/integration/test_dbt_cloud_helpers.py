@@ -2,7 +2,7 @@ import os
 
 from pytest_helpers import hydrate_job_definition
 
-from dbt_cloud_jobs.dbt_cloud_helpers import (
+from dbt_cloud_jobs.dbt_api_helpers import (
     create_dbt_cloud_job,
     delete_dbt_cloud_job,
     list_dbt_cloud_jobs,

@@ -5,7 +5,7 @@ import pytest
 import yaml
 from pytest_helpers import job_prefix
 
-from dbt_cloud_jobs.dbt_cloud_helpers import delete_dbt_cloud_job, list_dbt_cloud_jobs
+from dbt_cloud_jobs.dbt_api_helpers import delete_dbt_cloud_job, list_dbt_cloud_jobs
 from dbt_cloud_jobs.logger import logger
 
 
