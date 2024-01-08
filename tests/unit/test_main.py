@@ -14,13 +14,12 @@ from dbt_cloud_jobs.main import main
 from tests.pytest_helpers import hydrate_job_definition
 
 
-def test_main_args_import_and_sync_both_true():
-    with Path.open(Path("./tests/fixtures/valid/simple_job.yml"), "r") as file:
-        definitions = yaml.safe_load(file)
+def test_main_args_import_and_sync_both_true(file_simple_job_yml):
+    definitions = file_simple_job_yml
 
     definition = hydrate_job_definition(definitions["jobs"][0])
     file = NamedTemporaryFile()
-    file.write(bytes(yaml.dump({"jobs": [definition]}), encoding="utf-8"))
+    file.write(bytes(yaml.safe_dump({"jobs": [definition]}), encoding="utf-8"))
     file.seek(0)
     with Path.open(Path(file.name), "r") as f:
         definitions = yaml.safe_load(f)
@@ -41,13 +40,12 @@ def test_main_args_import_to_existing_file():
     assert str(e.value) == f"{file.name} already exists, please choose a different file name."
 
 
-def test_main_args_import_without_account_id():
-    with Path.open(Path("./tests/fixtures/valid/simple_job.yml"), "r") as file:
-        definitions = yaml.safe_load(file)
+def test_main_args_import_without_account_id(file_simple_job_yml):
+    definitions = file_simple_job_yml
 
     definition = hydrate_job_definition(definitions["jobs"][0])
     file = NamedTemporaryFile()
-    file.write(bytes(yaml.dump({"jobs": [definition]}), encoding="utf-8"))
+    file.write(bytes(yaml.safe_dump({"jobs": [definition]}), encoding="utf-8"))
     file.seek(0)
     with Path.open(Path(file.name), "r") as f:
         definitions = yaml.safe_load(f)

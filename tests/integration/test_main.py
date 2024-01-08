@@ -26,13 +26,12 @@ def test_main_import_true(request, tmp_path):
     assert isinstance(definitions["jobs"], list)
 
 
-def test_main_sync_false(caplog):
-    with Path.open(Path("./tests/fixtures/valid/simple_job.yml"), "r") as file:
-        definitions = yaml.safe_load(file)
+def test_main_sync_false(caplog, file_simple_job_yml):
+    definitions = file_simple_job_yml
 
     definition = hydrate_job_definition(definitions["jobs"][0])
     file = NamedTemporaryFile()
-    file.write(bytes(yaml.dump({"jobs": [definition]}), encoding="utf-8"))
+    file.write(bytes(yaml.safe_dump({"jobs": [definition]}), encoding="utf-8"))
     file.seek(0)
     with Path.open(Path(file.name), "r") as f:
         definitions = yaml.safe_load(f)
@@ -46,14 +45,13 @@ def test_main_sync_false(caplog):
     assert f"Pass `--sync` to sync the jobs defined in `{file.name}` to dbt Cloud." in caplog.text
 
 
-def test_main_sync_remove_job_allow_deletes_false(caplog):
-    with Path.open(Path("./tests/fixtures/valid/simple_job.yml"), "r") as file:
-        definitions = yaml.safe_load(file)
+def test_main_sync_remove_job_allow_deletes_false(caplog, file_simple_job_yml):
+    definitions = file_simple_job_yml
 
     definition_1 = hydrate_job_definition(definitions["jobs"][0])
     definition_2 = hydrate_job_definition(definitions["jobs"][0])
     file = NamedTemporaryFile()
-    file.write(bytes(yaml.dump({"jobs": [definition_1, definition_2]}), encoding="utf-8"))
+    file.write(bytes(yaml.safe_dump({"jobs": [definition_1, definition_2]}), encoding="utf-8"))
     file.seek(0)
     with Path.open(Path(file.name), "r") as f:
         definitions = yaml.safe_load(f)
@@ -77,7 +75,7 @@ def test_main_sync_remove_job_allow_deletes_false(caplog):
         if x["name"] == definition_2["name"]
     ][0]
     file = NamedTemporaryFile()
-    file.write(bytes(yaml.dump({"jobs": [definition_1]}), encoding="utf-8"))
+    file.write(bytes(yaml.safe_dump({"jobs": [definition_1]}), encoding="utf-8"))
     file.seek(0)
     with Path.open(Path(file.name), "r") as f:
         definitions = yaml.safe_load(f)
@@ -107,14 +105,13 @@ def test_main_sync_remove_job_allow_deletes_false(caplog):
     )
 
 
-def test_main_sync_remove_job_allow_deletes_true(caplog):
-    with Path.open(Path("./tests/fixtures/valid/simple_job.yml"), "r") as file:
-        definitions = yaml.safe_load(file)
+def test_main_sync_remove_job_allow_deletes_true(caplog, file_simple_job_yml):
+    definitions = file_simple_job_yml
 
     definition_1 = hydrate_job_definition(definitions["jobs"][0])
     definition_2 = hydrate_job_definition(definitions["jobs"][0])
     file = NamedTemporaryFile()
-    file.write(bytes(yaml.dump({"jobs": [definition_1, definition_2]}), encoding="utf-8"))
+    file.write(bytes(yaml.safe_dump({"jobs": [definition_1, definition_2]}), encoding="utf-8"))
     file.seek(0)
     with Path.open(Path(file.name), "r") as f:
         definitions = yaml.safe_load(f)
@@ -138,7 +135,7 @@ def test_main_sync_remove_job_allow_deletes_true(caplog):
         if x["name"] == definition_2["name"]
     ][0]
     file = NamedTemporaryFile()
-    file.write(bytes(yaml.dump({"jobs": [definition_1]}), encoding="utf-8"))
+    file.write(bytes(yaml.safe_dump({"jobs": [definition_1]}), encoding="utf-8"))
     file.seek(0)
     with Path.open(Path(file.name), "r") as f:
         definitions = yaml.safe_load(f)
@@ -162,13 +159,12 @@ def test_main_sync_remove_job_allow_deletes_true(caplog):
     )
 
 
-def test_main_sync_simple_job(caplog):
-    with Path.open(Path("./tests/fixtures/valid/simple_job.yml"), "r") as file:
-        definitions = yaml.safe_load(file)
+def test_main_sync_simple_job(caplog, file_simple_job_yml):
+    definitions = file_simple_job_yml
 
     definition = hydrate_job_definition(definitions["jobs"][0])
     file = NamedTemporaryFile()
-    file.write(bytes(yaml.dump({"jobs": [definition]}), encoding="utf-8"))
+    file.write(bytes(yaml.safe_dump({"jobs": [definition]}), encoding="utf-8"))
     file.seek(0)
     with Path.open(Path(file.name), "r") as f:
         definitions = yaml.safe_load(f)
@@ -183,13 +179,12 @@ def test_main_sync_simple_job(caplog):
     assert f"Found definitions for 1 job(s)." in caplog.text
 
 
-def test_main_sync_true():
-    with Path.open(Path("./tests/fixtures/valid/simple_job.yml"), "r") as file:
-        definitions = yaml.safe_load(file)
+def test_main_sync_true(file_simple_job_yml):
+    definitions = file_simple_job_yml
 
     definition = hydrate_job_definition(definitions["jobs"][0])
     file = NamedTemporaryFile()
-    file.write(bytes(yaml.dump({"jobs": [definition]}), encoding="utf-8"))
+    file.write(bytes(yaml.safe_dump({"jobs": [definition]}), encoding="utf-8"))
     file.seek(0)
     with Path.open(Path(file.name), "r") as f:
         definitions = yaml.safe_load(f)

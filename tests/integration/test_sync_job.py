@@ -1,15 +1,11 @@
-from pathlib import Path
-
-import yaml
 from pytest_helpers import hydrate_job_definition
 
 from dbt_cloud_jobs.dbt_cloud_helpers import create_dbt_cloud_job
 from dbt_cloud_jobs.sync_job import sync_dbt_cloud_job
 
 
-def test_sync_dbt_cloud_job_new_job(caplog) -> None:
-    with Path.open(Path("./tests/fixtures/valid/simple_job.yml"), "r") as f:
-        definitions = yaml.safe_load(f)
+def test_sync_dbt_cloud_job_new_job(caplog, file_simple_job_yml) -> None:
+    definitions = file_simple_job_yml
 
     definition = hydrate_job_definition(definitions["jobs"][0])
     sync_dbt_cloud_job(definition=definition)
@@ -17,9 +13,8 @@ def test_sync_dbt_cloud_job_new_job(caplog) -> None:
     assert f"Job `{definition['name']}` does not exist, creating..." in caplog.text
 
 
-def test_sync_dbt_cloud_job_no_update(caplog) -> None:
-    with Path.open(Path("./tests/fixtures/valid/simple_job.yml"), "r") as f:
-        definitions = yaml.safe_load(f)
+def test_sync_dbt_cloud_job_no_update(caplog, file_simple_job_yml) -> None:
+    definitions = file_simple_job_yml
 
     definition = hydrate_job_definition(definitions["jobs"][0])
     create_dbt_cloud_job(definition=definition)
@@ -32,9 +27,8 @@ def test_sync_dbt_cloud_job_no_update(caplog) -> None:
     )
 
 
-def test_sync_dbt_cloud_job_update(caplog) -> None:
-    with Path.open(Path("./tests/fixtures/valid/simple_job.yml"), "r") as f:
-        definitions = yaml.safe_load(f)
+def test_sync_dbt_cloud_job_update(caplog, file_simple_job_yml) -> None:
+    definitions = file_simple_job_yml
 
     definition = hydrate_job_definition(definitions["jobs"][0])
     create_dbt_cloud_job(definition=definition)
