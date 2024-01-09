@@ -11,7 +11,7 @@ Version control your dbt Cloud jobs with YML.
 # Installation
 
 ```bash
-pip install dbt_cloud_jobs
+pip install dbt-cloud-jobs
 ```
 
 # Quickstart
@@ -68,3 +68,11 @@ In CD `dbt_cloud_jobs` should be used to sync the provided YML file to dbt Cloud
 ```
 
 # Development
+
+# Release
+
+Trigger the `Publish to PyPi` workflow, inputting the version to publish to PyPi. This workflow will:
+
+- Publish the version to [PyPi](https://pypi.org/project/dbt-cloud-jobs/).
+- Tag the HEAD commit of the `main` branches (tags visible [here](https://github.com/pgoslatara/dbt-cloud-jobs/tags)).
+- Create a release (releases visible [here](https://github.com/pgoslatara/dbt-cloud-jobs/releases)).

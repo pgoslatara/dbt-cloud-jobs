@@ -64,6 +64,8 @@ pytest-cov = "*"
 [tool.poetry.scripts]
 dbt_cloud_jobs = "dbt_cloud_jobs.main:main"
 
+[tool.poetry_bumpversion.file."./dbt_cloud_jobs/version.py"]
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

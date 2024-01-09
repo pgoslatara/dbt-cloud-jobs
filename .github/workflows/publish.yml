@@ -1,0 +1,61 @@
+---
+name: Publish to PyPi
+
+on:
+    workflow_dispatch:
+        inputs:
+            tag_name:
+                description: |
+                    The version to release, will be used in the tag and the release title.
+                    Ensure semantic versioning is followed. Should start with "v", e.g. "v0.0.14".
+                required: true
+                type: string
+
+jobs:
+    publish-to-pypi:
+        name: Publish to PyPi
+        environment:
+            name: publish
+            url: https://pypi.org/p/dbt-cloud-jobs
+        permissions:
+            contents: write
+            id-token: write
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Python
+              id: setup-python
+              uses: actions/setup-python@v5
+
+            - name: Install Poetry
+              uses: snok/install-poetry@v1
+              with:
+                  virtualenvs-create: true
+                  virtualenvs-in-project: true
+                  installer-parallel: true
+
+            - name: Install version bump Poetry plugin
+              run: poetry self add poetry-bumpversion
+
+            - name: Bump version
+              run: poetry version ${{ inputs.tag_name }}
+
+            - name: Build whl
+              run: poetry build
+
+            - name: Create release
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  gh release create ${{ inputs.tag_name }} \
+                      ./dist/* \
+                      --generate-notes \
+                      --latest \
+                      --repo ${{ github.repository }} \
+                      --target main \
+                      --title '${{ inputs.tag_name }}'
+
+            - name: Publish package distributions to PyPI
+              uses: pypa/gh-action-pypi-publish@release/v1
