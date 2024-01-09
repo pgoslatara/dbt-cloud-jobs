@@ -21,16 +21,36 @@ exclude = '''
 profile = "black"
 
 [tool.poetry]
-name = "dbt-cloud-jobs"
-version = "0.0.0"
-description = "Define dbt Cloud jobs in YAML"
 authors = ["Padraic Slattery <pgoslatara@gmail.com>"]
+classifiers = [
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+description = "Version control your dbt Cloud jobs with YML."
+keywords = [
+  "python",
+  "cli",
+  "dbt",
+  "CI/CD",
+]
+license ="MIT"
+maintainers = ["Padraic Slattery <pgoslatara@gmail.com>"]
+name = "dbt-cloud-jobs"
 packages = [
     { include = "dbt_cloud_jobs" },
 ]
+readme = "README.md"
+repository = "https://github.com/pgoslatara/dbt-cloud-jobs"
+version = "0.0.0"
 
 [tool.poetry.dependencies]
-python = ">=3.8,<3.12"
+python = ">=3.8,<3.13"
 requests = "*"
 
 [tool.poetry.dev-dependencies]
