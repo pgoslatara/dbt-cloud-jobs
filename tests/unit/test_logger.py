@@ -31,4 +31,4 @@ def test_logger_info(caplog, file_definition_valid: Path) -> None:
     with pytest.raises(RuntimeError) as e:
         main(Namespace(file=file_definition_valid, sync=True))
 
-    assert "Running dbt_cloud_jobs..." in caplog.text
+    assert "Running dbt_cloud_jobs (0.0.0)..." in caplog.text

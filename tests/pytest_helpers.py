@@ -1,12 +1,12 @@
 import logging
 import os
-import sys
 from contextlib import contextmanager
-from functools import lru_cache
 from random import random
 from typing import List, Tuple
 
 from _pytest.logging import LogCaptureHandler
+
+from dbt_cloud_jobs.utils import job_prefix
 
 
 # Source: https://github.com/pytest-dev/pytest/issues/3697#issuecomment-792129636
@@ -37,11 +37,6 @@ def hydrate_job_definition(definition: dict) -> dict:  # TODO: pydantic class
     definition["name"] = f"{job_prefix()}_{definition['name']}_{int(random() * 1000000)}"
     definition["project_id"] = int(os.getenv("DBT_PROJECT_ID"))
     return definition
-
-
-@lru_cache
-def job_prefix():
-    return f"dbt_cloud_jobs_ci_{sys.version_info[0]}_{sys.version_info[1]}_{sys.version_info[2]}"
 
 
 def records_to_tuples(records: List[logging.LogRecord]) -> List[Tuple[str, int, str]]:

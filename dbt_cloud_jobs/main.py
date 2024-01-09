@@ -10,8 +10,8 @@ from dbt_cloud_jobs.exceptions import (
 from dbt_cloud_jobs.logger import logger
 from dbt_cloud_jobs.parser import parse_args
 from dbt_cloud_jobs.sync_job import sync_dbt_cloud_job
+from dbt_cloud_jobs.utils import job_prefix
 from dbt_cloud_jobs.version import version
-from tests.pytest_helpers import job_prefix
 
 
 def main(args=None) -> None:
