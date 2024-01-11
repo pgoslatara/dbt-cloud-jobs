@@ -1,0 +1,24 @@
+---
+jobs:
+    - account_id: 123
+      dbt_version: # TODO: prevent being NULL
+      environment_id: 123
+      execute_steps:
+          - dbtrun
+      id: 123
+      name: Job with non-dbt command
+      project_id: 123
+      schedule: # TODO: prevent this from being NULL, dbt Cloud forces default value
+          cron: 0 * * * *
+          date:
+              type: every_day
+          time:
+              type: every_hour
+              interval: 1
+      settings:
+          threads: 1
+          target_name: default
+      state: 1
+      triggers:
+          github_webhook: false
+          schedule: false

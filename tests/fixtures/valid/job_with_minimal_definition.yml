@@ -5,23 +5,23 @@ jobs:
       environment_id: 123
       execute_steps:
           - dbt run
-          - dbt test
-      name: Job with multiple steps
+      name: Job with minimal definition
       project_id: 123
       schedule:
-          cron: 0 0,2,6 * * 0,3,6
+          cron: 0 * * * 0,1,2,3,4,5,6
           date:
               days:
                   - 0
+                  - 1
+                  - 2
                   - 3
+                  - 4
+                  - 5
                   - 6
               type: days_of_week
           time:
-              hours:
-                  - 0
-                  - 2
-                  - 6
-              type: at_exact_hours
+              interval: 1
+              type: every_hour
       settings:
           threads: 1
           target_name: default

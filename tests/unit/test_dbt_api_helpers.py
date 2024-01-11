@@ -16,6 +16,17 @@ def test_dbt_cloud_api_connection() -> None:
     assert response["status"]["is_success"]
 
 
+def test_dbt_cloud_api_connection_errors() -> None:
+    """
+    Test that a RuntimeError is raised for invalid endpoint.
+    """
+
+    with pytest.raises(RuntimeError):
+        call_dbt_cloud_api(
+            method="get", endpoint=f'accounts/{os.getenv("DBT_ACCOUNT_ID")}/non_existent_endpoint/'
+        )
+
+
 @pytest.mark.parametrize(
     "env_var_name", ("DBT_ACCOUNT_ID", "DBT_ENVIRONMENT_ID", "DBT_PROJECT_ID")
 )

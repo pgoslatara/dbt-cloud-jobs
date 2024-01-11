@@ -34,6 +34,12 @@ def parse_args(args):
         help="When passed as a flag, any dbt Cloud job will be saved to a file specified by the `--file` parameter.",
     )
     parser.add_argument(
+        "--validate",
+        action="store_true",
+        default=False,
+        help="When passed as a flag, any dbt Cloud jobs defined in the file passed to `--file` will be validated. No job on dbt Cloud will be updated; to do this, pass `--sync` instead of `--validate`.",
+    )
+    parser.add_argument(
         "--sync",
         action="store_true",
         default=False,

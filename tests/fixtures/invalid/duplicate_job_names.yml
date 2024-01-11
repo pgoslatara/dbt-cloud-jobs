@@ -1,11 +1,11 @@
 ---
 jobs:
-    - name: Simple job
-      account_id: 123
+    - account_id: 123
       dbt_version: # TODO: prevent being NULL
       environment_id: 123
       execute_steps:
           - dbt run
+      name: Simple job
       project_id: 123
       schedule: # TODO: prevent this from being NULL, dbt Cloud forces default value
           cron: 0 * * * *
@@ -22,12 +22,12 @@ jobs:
           github_webhook: false
           schedule: false
 
-    - name: Simple job
-      account_id: 123
+    - account_id: 123
       dbt_version: # TODO: prevent being NULL
       environment_id: 123
       execute_steps:
           - dbt run
+      name: Simple job
       project_id: 123
       schedule: # TODO: prevent this from being NULL, dbt Cloud forces default value
           cron: 0 * * * *

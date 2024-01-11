@@ -25,9 +25,12 @@ def test_main_import_true(request, tmp_path):
 
     assert isinstance(definitions["jobs"], list)
 
+    for definition in definitions["jobs"]:
+        assert "id" not in definition.keys()
 
-def test_main_sync_false(caplog, file_simple_job_yml):
-    definitions = file_simple_job_yml
+
+def test_main_sync_false(caplog, file_job_minimal_definition):
+    definitions = file_job_minimal_definition
 
     definition = hydrate_job_definition(definitions["jobs"][0])
     file = NamedTemporaryFile()
@@ -45,8 +48,8 @@ def test_main_sync_false(caplog, file_simple_job_yml):
     assert f"Pass `--sync` to sync the jobs defined in `{file.name}` to dbt Cloud." in caplog.text
 
 
-def test_main_sync_remove_job_allow_deletes_false(caplog, file_simple_job_yml):
-    definitions = file_simple_job_yml
+def test_main_sync_remove_job_allow_deletes_false(caplog, file_job_minimal_definition):
+    definitions = file_job_minimal_definition
 
     definition_1 = hydrate_job_definition(definitions["jobs"][0])
     definition_2 = hydrate_job_definition(definitions["jobs"][0])
@@ -105,8 +108,8 @@ def test_main_sync_remove_job_allow_deletes_false(caplog, file_simple_job_yml):
     )
 
 
-def test_main_sync_remove_job_allow_deletes_true(caplog, file_simple_job_yml):
-    definitions = file_simple_job_yml
+def test_main_sync_remove_job_allow_deletes_true(caplog, file_job_minimal_definition):
+    definitions = file_job_minimal_definition
 
     definition_1 = hydrate_job_definition(definitions["jobs"][0])
     definition_2 = hydrate_job_definition(definitions["jobs"][0])
@@ -159,8 +162,8 @@ def test_main_sync_remove_job_allow_deletes_true(caplog, file_simple_job_yml):
     )
 
 
-def test_main_sync_simple_job(caplog, file_simple_job_yml):
-    definitions = file_simple_job_yml
+def test_main_sync_simple_job(caplog, file_job_minimal_definition):
+    definitions = file_job_minimal_definition
 
     definition = hydrate_job_definition(definitions["jobs"][0])
     file = NamedTemporaryFile()
@@ -179,8 +182,8 @@ def test_main_sync_simple_job(caplog, file_simple_job_yml):
     assert f"Found definitions for 1 job(s)." in caplog.text
 
 
-def test_main_sync_true(file_simple_job_yml):
-    definitions = file_simple_job_yml
+def test_main_sync_true(file_job_minimal_definition):
+    definitions = file_job_minimal_definition
 
     definition = hydrate_job_definition(definitions["jobs"][0])
     file = NamedTemporaryFile()

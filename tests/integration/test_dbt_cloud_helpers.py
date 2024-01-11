@@ -9,16 +9,16 @@ from dbt_cloud_jobs.dbt_api_helpers import (
 )
 
 
-def test_create_dbt_cloud_job(file_simple_job_yml) -> None:
-    definitions = file_simple_job_yml
+def test_create_dbt_cloud_job(file_job_minimal_definition) -> None:
+    definitions = file_job_minimal_definition
 
     definition = hydrate_job_definition(definition=definitions["jobs"][0])
     create_dbt_cloud_job(definition=definition)
     assert definition["name"] in [x["name"] for x in list_dbt_cloud_jobs(definition["account_id"])]
 
 
-def test_delete_dbt_cloud_job(file_simple_job_yml) -> None:
-    definitions = file_simple_job_yml
+def test_delete_dbt_cloud_job(file_job_minimal_definition) -> None:
+    definitions = file_job_minimal_definition
 
     definition = hydrate_job_definition(definition=definitions["jobs"][0])
     job_id = create_dbt_cloud_job(definition=definition)

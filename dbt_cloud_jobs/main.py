@@ -11,6 +11,7 @@ from dbt_cloud_jobs.logger import logger
 from dbt_cloud_jobs.parser import parse_args
 from dbt_cloud_jobs.sync_job import sync_dbt_cloud_job
 from dbt_cloud_jobs.utils import job_prefix
+from dbt_cloud_jobs.validator import validate_job_definition
 from dbt_cloud_jobs.version import version
 
 
@@ -23,10 +24,14 @@ def main(args=None) -> None:
         raise DbtCloudJobsInvalidArguments(
             "`--account_id` must be passed when `--import` is passed."
         )
-    if args.import_ and args.sync:
+    elif args.import_ and args.sync:
         raise DbtCloudJobsInvalidArguments("Only one of `--import` and `--sync` can be specified.")
+    elif args.sync and args.validate:
+        raise DbtCloudJobsInvalidArguments(
+            "Only one of `--sync` and `--validate` can be specified."
+        )
 
-    elif args.import_:
+    if args.import_:
         logger.info("Operation: import")
 
         # Ensure yml file doesn't already exists
@@ -36,12 +41,17 @@ def main(args=None) -> None:
             )
 
         job_definitions = list_dbt_cloud_jobs(args.account_id)
+
+        # Remove `id` key as `name` is used to identify jobs
+        for definition in job_definitions:
+            definition.pop("id")
+
         logger.info(f"Saving job definitions to `{args.file}...")
-        with open(args.file, "w") as f:
+        with Path.open(Path(args.file), "w") as f:
             yaml.safe_dump({"jobs": job_definitions}, stream=f, encoding="utf-8", sort_keys=True)
 
-    elif args.sync:
-        logger.info("Operation: sync")
+    elif args.validate or args.sync:
+        logger.info("Operation: validate")
 
         # Ensure yml file exists
         if not Path(args.file).exists():
@@ -60,6 +70,8 @@ def main(args=None) -> None:
             raise DbtCloudJobsDuplicateJobNameError(f"Job names must be unique in `{args.file}`.")
 
         for definition in job_definitions["jobs"]:
+            validate_job_definition(definition=definition)
+
             # New jobs and jobs that need updating
             sync_dbt_cloud_job(definition=definition)
 

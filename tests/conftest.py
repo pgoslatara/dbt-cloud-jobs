@@ -22,8 +22,8 @@ def file_definition_valid(tmp_path: Path) -> Path:
 
 
 @pytest.fixture(scope="session")
-def file_simple_job_yml() -> dict:
-    with Path.open(Path("./tests/fixtures/valid/simple_job.yml"), "r") as file:
+def file_job_minimal_definition() -> dict:
+    with Path.open(Path("./tests/fixtures/valid/job_with_minimal_definition.yml"), "r") as file:
         definitions = yaml.safe_load(file)
 
     return definitions
