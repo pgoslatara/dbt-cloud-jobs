@@ -1,8 +1,8 @@
 # dbt-cloud-jobs
 
 [![pypi version shield](https://img.shields.io/pypi/v/dbt-cloud-jobs)](https://img.shields.io/pypi/v/dbt-cloud-jobs)
-![CI](https://github.com/github/pgoslatara/dbt-cloud-jobs/actions/workflows/ci_pipeline.yml/badge.svg)
-![Publish](https://github.com/github/pgoslatara/dbt-cloud-jobs/actions/workflows/publish.yml/badge.svg)
+![CI](https://github.com/pgoslatara/dbt-cloud-jobs/actions/workflows/ci_pipeline.yml/badge.svg)
+![Publish](https://github.com/pgoslatara/dbt-cloud-jobs/actions/workflows/publish.yml/badge.svg)
 ![Python versions](https://img.shields.io/pypi/pyversions/dbt-cloud-jobs.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -71,7 +71,7 @@ In CD `dbt_cloud_jobs` should be used to sync the provided YML file to dbt Cloud
 
 # Release
 
-Trigger the `Publish to PyPi` workflow, inputting the version to publish to PyPi. This workflow will:
+Trigger the `Publish` workflow, inputting the version to publish to PyPi. This workflow will:
 
 - Publish the version to [PyPi](https://pypi.org/project/dbt-cloud-jobs/).
 - Tag the HEAD commit of the `main` branches (tags visible [here](https://github.com/pgoslatara/dbt-cloud-jobs/tags)).
