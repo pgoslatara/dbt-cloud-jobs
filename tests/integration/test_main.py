@@ -40,7 +40,7 @@ def test_main_sync_false(caplog, file_job_minimal_definition):
         definitions = yaml.safe_load(f)
 
     logger.info("Calling main() with sync=False...")
-    main(Namespace(file=file.name, sync=False))
+    main(Namespace(file=file.name, validate=True, sync=False))
 
     assert definition["name"] not in [
         x["name"] for x in list_dbt_cloud_jobs(account_id=definition["account_id"])

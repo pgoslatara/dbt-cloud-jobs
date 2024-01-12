@@ -24,11 +24,13 @@ def main(args=None) -> None:
         raise DbtCloudJobsInvalidArguments(
             "`--account_id` must be passed when `--import` is passed."
         )
-    elif args.import_ and args.sync:
-        raise DbtCloudJobsInvalidArguments("Only one of `--import` and `--sync` can be specified.")
-    elif args.sync and args.validate:
+    elif sum([args.import_, args.validate, args.sync]) == 0:
         raise DbtCloudJobsInvalidArguments(
-            "Only one of `--sync` and `--validate` can be specified."
+            "One of `--import`, `--validate` and `--sync` must be specified."
+        )
+    elif sum([args.import_, args.validate, args.sync]) > 1:
+        raise DbtCloudJobsInvalidArguments(
+            "Only one of `--import`, `--validate` and `--sync` can be specified."
         )
 
     if args.import_:
@@ -72,6 +74,12 @@ def main(args=None) -> None:
         for definition in job_definitions["jobs"]:
             validate_job_definition(definition=definition)
 
+        logger.info(f"All jobs defined in {args.file} are valid.")
+
+    if args.sync:
+        logger.info("Operation: sync")
+
+        for definition in job_definitions["jobs"]:
             # New jobs and jobs that need updating
             sync_dbt_cloud_job(definition=definition)
 
@@ -93,7 +101,7 @@ def main(args=None) -> None:
                         logger.warning(
                             f"Job `{job['name']}` (id: {job['id']}) exists in dbt Cloud but not in `{args.file}`. Pass `--allow-deletes` to delete this job from dbt Cloud."
                         )
-    else:
+    elif not args.import_ and args.validate and not args.sync:
         logger.warning(f"Pass `--sync` to sync the jobs defined in `{args.file}` to dbt Cloud.")
 
 
