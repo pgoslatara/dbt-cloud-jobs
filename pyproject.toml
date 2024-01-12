@@ -53,6 +53,7 @@ version = "0.0.0"
 python = ">=3.8,<3.13"
 requests = "*"
 pydantic = "<2"
+pyyaml = "*"
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^3"

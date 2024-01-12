@@ -113,7 +113,7 @@ class DbtCloudJobConfig(BaseModel):
     )
     is_deferrable: StrictBool = False
     job_completion_trigger_condition: Optional[StrictBool]
-    job_type: Optional[Literal["ci", "scheduled"]]
+    job_type: Optional[Literal["ci", "other", "scheduled"]]
     lifecycle_webhooks: StrictBool = False
     lifecycle_webhooks_url: Optional[str]
     name: str = Field(
