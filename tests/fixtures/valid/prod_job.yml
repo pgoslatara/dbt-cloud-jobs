@@ -1,0 +1,54 @@
+---
+jobs:
+    - account_id: 123
+      created_at: '2024-01-07T21:27:30.277018+00:00'
+      cron_humanized: Every 2 hours, only on Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, and Saturday
+      dbt_version:
+      deactivated: false
+      deferring_environment_id: 123
+      deferring_job_definition_id:
+      description: ''
+      environment_id: 123
+      execute_steps:
+          - dbt build
+      execution:
+          timeout_seconds: 100
+      generate_docs: true
+      generate_sources: true
+      is_deferrable: false
+      job_completion_trigger_condition:
+      job_type: scheduled
+      lifecycle_webhooks: false
+      lifecycle_webhooks_url:
+      name: Prod job
+      next_run: '2024-01-07T22:00:00+00:00'
+      next_run_humanized: 2 days, 16 hours
+      project_id: 123
+      raw_dbt_version:
+      run_failure_count: 0
+      run_generate_sources: true
+      schedule:
+          cron: 0 */2 * * 0,1,2,3,4,5,6
+          date:
+              days:
+                  - 0
+                  - 1
+                  - 2
+                  - 3
+                  - 4
+                  - 5
+                  - 6
+              type: days_of_week
+          time:
+              interval: 2
+              type: every_hour
+      settings:
+          target_name: default
+          threads: 4
+      state: 1
+      triggers:
+          git_provider_webhook: false
+          github_webhook: false
+          schedule: true
+      triggers_on_draft_pr: false
+      updated_at: '2024-01-07T21:27:30.277035+00:00'

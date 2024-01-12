@@ -1,0 +1,31 @@
+---
+jobs:
+    - account_id: 123
+      dbt_version: # TODO: prevent being NULL
+      environment_id: 123
+      execute_steps:
+          - dbt run
+      name: Job with minimal definition
+      project_id: 123
+      schedule:
+          cron: 0 * * * 0,1,2,3,4,5,6
+          date:
+              days:
+                  - 0
+                  - 1
+                  - 2
+                  - 3
+                  - 4
+                  - 5
+                  - 6
+              type: days_of_week
+          time:
+              interval: 1
+              type: every_hour
+      settings:
+          threads: 1
+          target_name: default
+      state: 1
+      triggers:
+          github_webhook: false
+          schedule: false
