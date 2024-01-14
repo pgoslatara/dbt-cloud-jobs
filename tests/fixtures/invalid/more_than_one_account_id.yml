@@ -1,0 +1,47 @@
+---
+jobs:
+    - account_id: 123
+      dbt_version: # TODO: prevent being NULL
+      environment_id: 123
+      execute_steps:
+          - dbt run
+      name: Simple job 123
+      project_id: 123
+      schedule:
+          cron: 0 2 * * *
+          date:
+              cron: 0 2 * * *
+              type: custom_cron
+          time:
+              interval: 1
+              type: every_hour
+      settings:
+          threads: 1
+          target_name: default
+      state: 1
+      triggers:
+          github_webhook: false
+          schedule: false
+
+    - account_id: 456
+      dbt_version: # TODO: prevent being NULL
+      environment_id: 123
+      execute_steps:
+          - dbt run
+      name: Simple job 456
+      project_id: 123
+      schedule:
+          cron: 0 2 * * *
+          date:
+              cron: 0 2 * * *
+              type: custom_cron
+          time:
+              interval: 1
+              type: every_hour
+      settings:
+          threads: 1
+          target_name: default
+      state: 1
+      triggers:
+          github_webhook: false
+          schedule: false

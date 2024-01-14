@@ -11,7 +11,7 @@ from dbt_cloud_jobs.logger import logger
 from dbt_cloud_jobs.parser import parse_args
 from dbt_cloud_jobs.sync_job import sync_dbt_cloud_job
 from dbt_cloud_jobs.utils import job_prefix
-from dbt_cloud_jobs.validator import validate_job_definition
+from dbt_cloud_jobs.validator import validate_job_definition_file
 from dbt_cloud_jobs.version import version
 
 
@@ -71,10 +71,7 @@ def main(args=None) -> None:
         ):
             raise DbtCloudJobsDuplicateJobNameError(f"Job names must be unique in `{args.file}`.")
 
-        for definition in job_definitions["jobs"]:
-            validate_job_definition(definition=definition)
-
-        logger.info(f"All jobs defined in {args.file} are valid.")
+        validate_job_definition_file(file=args.file)
 
     if args.sync:
         logger.info("Operation: sync")
