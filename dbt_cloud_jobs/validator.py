@@ -1,6 +1,8 @@
 import datetime
+from pathlib import Path
 from typing import List, Literal, Optional, Set, Union
 
+import yaml
 from pydantic import BaseModel, Extra, Field, StrictBool, root_validator, validator
 
 from dbt_cloud_jobs.logger import logger
@@ -83,7 +85,7 @@ class DbtCloudJobTriggers(BaseModel):
     custom_branch_only: StrictBool = False
 
 
-class DbtCloudJobConfig(BaseModel):
+class DbtCloudJobDefinition(BaseModel):
     account_id: int = Field(gt=0)
     created_at: Optional[datetime.datetime]
     cron_humanized: Optional[str]
@@ -167,6 +169,22 @@ class DbtCloudJobConfig(BaseModel):
         return cmd
 
 
-def validate_job_definition(definition: dict) -> None:
+class DbtCloudJobDefinitionsFile(BaseModel):
+    jobs: List[DbtCloudJobDefinition]
+
+    @root_validator()
+    def account_id_values_are_consistent(cls, values):
+        assert (
+            len({x.account_id for x in values["jobs"]}) == 1
+        ), "All jobs must have the same account_id."
+
+        return values
+
+
+def validate_job_definition_file(file: Path) -> None:
     logger.info("Validating job definition...")
-    DbtCloudJobConfig(**definition)
+    with Path.open(Path(file), "r") as f:
+        definitions = yaml.safe_load(f)
+
+    DbtCloudJobDefinitionsFile(**definitions)
+    logger.info(f"All jobs defined in {file} are valid.")
