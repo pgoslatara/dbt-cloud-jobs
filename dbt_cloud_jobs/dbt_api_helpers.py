@@ -45,8 +45,7 @@ def call_dbt_cloud_api(
         Mapping[str, Union[int, str]]: _description_
     """
 
-    # TODO: allow setting of URL to account for AU/EU/US
-    base_url = "https://cloud.getdbt.com/api/v2/"
+    base_url = f"{get_dbt_cloud_api_base_url()}/api/v2/"
     if method == "get":
         r = create_requests_session().get(
             auth=DbtCloudAuth(),
@@ -113,6 +112,27 @@ def delete_dbt_cloud_job(definition) -> None:  # TODO pydantic class for definit
     logger.warning(
         f"Deleted dbt Cloud job `{definition['name']}` (id: {definition['id']}), URL: https://cloud.getdbt.com/deploy/{definition['account_id']}/projects/{definition['project_id']}/jobs/{definition['id']}"
     )
+
+
+@lru_cache
+def get_dbt_cloud_api_base_url() -> str:
+    """Returns the base URL to use for all dbt Cloud API calls.
+
+    Raises:
+        RuntimeError:
+
+    Returns:
+        str: Base url to use for all dbt Cloud API calls.
+    """
+
+    if os.getenv("DBT_CLOUD_REGION") == "US":
+        return "https://cloud.getdbt.com"
+    elif os.getenv("DBT_CLOUD_REGION") == "Europe":
+        return "https://emea.dbt.com"
+    elif os.getenv("DBT_CLOUD_REGION") == "AU":
+        return "https://au.dbt.com"
+    else:
+        raise RuntimeError("The env var `DBT_CLOUD_REGION` must be one of: US, Europe, AU")
 
 
 def list_dbt_cloud_jobs(account_id: int) -> List[Mapping[str, Union[int, str]]]:

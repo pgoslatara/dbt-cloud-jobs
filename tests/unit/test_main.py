@@ -1,10 +1,13 @@
+import os
 from argparse import Namespace
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
 import pytest
 import yaml
+from pytest import MonkeyPatch
 
+from dbt_cloud_jobs.dbt_api_helpers import get_dbt_cloud_api_base_url
 from dbt_cloud_jobs.exceptions import (
     DbtCloudJobsDuplicateJobNameError,
     DbtCloudJobsInvalidArguments,
@@ -89,6 +92,32 @@ def test_main_args_sync_and_validate_both_true(file_job_minimal_definition):
         main(Namespace(file=file.name, sync=True, validate=True))
 
     assert str(e.value) == "Only one of `--import`, `--validate` and `--sync` can be specified."
+
+
+@pytest.mark.parametrize("dbt_cloud_region", (None, "", 2, "EU", "us"))
+def test_main_dbt_cloud_region_not_set_errors(
+    dbt_cloud_region: str, file_job_minimal_definition
+) -> None:
+    if os.getenv("DBT_CLOUD_REGION") not in ["AU", "Europe", "US"]:
+        raise RuntimeError("The env var `DBT_CLOUD_REGION` must be one of: US, Europe, AU")
+
+    with MonkeyPatch.context() as mp:
+        mp.setenv("DBT_CLOUD_REGION", dbt_cloud_region)
+        definitions = file_job_minimal_definition
+
+        definition = hydrate_job_definition(definitions["jobs"][0])
+        file = NamedTemporaryFile()
+        file.write(bytes(yaml.safe_dump({"jobs": [definition]}), encoding="utf-8"))
+        file.seek(0)
+        with Path.open(Path(file.name), "r") as f:
+            definitions = yaml.safe_load(f)
+
+        logger.info("Calling main() with validate=True...")
+        with pytest.raises(RuntimeError) as e:
+            get_dbt_cloud_api_base_url.cache_clear()
+            main(Namespace(file=file.name, validate=True))
+
+        assert str(e.value) == "The env var `DBT_CLOUD_REGION` must be one of: US, Europe, AU"
 
 
 def test_main_duplicate_job_names():

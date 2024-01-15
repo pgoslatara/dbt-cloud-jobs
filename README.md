@@ -21,10 +21,16 @@ pip install dbt-cloud-jobs
     - [Generate a service account token](https://docs.getdbt.com/docs/dbt-cloud-apis/service-tokens#generate-service-account-tokens), make sure to grant the `Jobs Admin` permission set.
     - If you do not have access to create a service account token you can create a [User API token](https://docs.getdbt.com/docs/dbt-cloud-apis/user-tokens). Note that the service account method is preferred.
 
-1. Set an environment variables with the value of the token:
+1. Set an environment variable with the value of the token:
 
     ```bash
     export DBT_API_TOKEN="<VALUE_FROM_PREVIOUS_STEP>"
+    ```
+
+1. Set an environment variable for the region where your dbt Cloud account is hosted. The value must be one of AU, Europe or US (see docs [here](https://docs.getdbt.com/dbt-cloud/api-v2#/)):
+
+    ```bash
+    export DBT_CLOUD_REGION="<REGION>"
     ```
 
 1. Import your existing dbt Cloud jobs:
