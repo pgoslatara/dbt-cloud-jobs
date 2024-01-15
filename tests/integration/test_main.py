@@ -56,6 +56,9 @@ def test_main_sync_remove_job_allow_deletes_false(caplog, file_job_minimal_defin
     file = NamedTemporaryFile()
     file.write(bytes(yaml.safe_dump({"jobs": [definition_1, definition_2]}), encoding="utf-8"))
     file.seek(0)
+
+    logger.error(f"{[definition_1, definition_2]=}")
+
     with Path.open(Path(file.name), "r") as f:
         definitions = yaml.safe_load(f)
 

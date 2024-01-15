@@ -175,7 +175,7 @@ class DbtCloudJobDefinitionsFile(BaseModel):
     @root_validator()
     def account_id_values_are_consistent(cls, values):
         assert (
-            len([x.account_id for x in values["jobs"]]) == 1
+            len({x.account_id for x in values["jobs"]}) == 1
         ), "All jobs must have the same account_id."
 
         return values
