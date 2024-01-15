@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import yaml
@@ -32,6 +33,11 @@ def main(args=None) -> None:
         raise DbtCloudJobsInvalidArguments(
             "Only one of `--import`, `--validate` and `--sync` can be specified."
         )
+
+    dbt_cloud_region = os.getenv("DBT_CLOUD_REGION")
+    if dbt_cloud_region not in ["AU", "Europe", "US"]:
+        raise RuntimeError("The env var `DBT_CLOUD_REGION` must be one of: US, Europe, AU")
+    logger.debug(f"{dbt_cloud_region=}")
 
     if args.import_:
         logger.info("Operation: import")
