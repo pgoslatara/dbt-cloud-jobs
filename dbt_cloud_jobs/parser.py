@@ -7,7 +7,7 @@ from dbt_cloud_jobs.logger import logger
 def parse_args(args):
     parser = argparse.ArgumentParser(description="Create dbt Cloud jobs from a YML file.")
     parser.add_argument(
-        "--account_id",
+        "--account-id",
         help="The dbt Cloud account ID, only used when `--import` is passed.",
         type=int,
     )
