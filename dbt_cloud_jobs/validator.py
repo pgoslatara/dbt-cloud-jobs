@@ -113,6 +113,7 @@ class DbtCloudJobDefinition(BaseModel):
         default=False,
         description="Enables dbt source freshness as the first step of this job, without breaking subsequent steps. Same as `run_generate_sources`.",
     )
+    id: Optional[int] = Field(description="The id of the dbt Cloud job", gt=0)
     is_deferrable: StrictBool = False
     job_completion_trigger_condition: Optional[StrictBool]
     job_type: Optional[Literal["ci", "other", "scheduled"]]
@@ -142,13 +143,6 @@ class DbtCloudJobDefinition(BaseModel):
 
     class Config:
         extra = Extra.allow
-
-    @root_validator()
-    def check_id_is_not_passed(cls, values):
-        if "id" in values.keys():
-            raise ValueError("`id` should be be passed in the job definition.")
-        else:
-            return values
 
     @root_validator()
     def check_source_values_are_consistent(cls, values):

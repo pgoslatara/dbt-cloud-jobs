@@ -25,9 +25,6 @@ def test_main_import_true(request, tmp_path):
 
     assert isinstance(definitions["jobs"], list)
 
-    for definition in definitions["jobs"]:
-        assert "id" not in definition.keys()
-
 
 def test_main_sync_false(caplog, file_job_minimal_definition):
     definitions = file_job_minimal_definition
