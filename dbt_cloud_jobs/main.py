@@ -50,10 +50,6 @@ def main(args=None) -> None:
 
         job_definitions = list_dbt_cloud_jobs(args.account_id)
 
-        # Remove `id` key as `name` is used to identify jobs
-        for definition in job_definitions:
-            definition.pop("id")
-
         logger.info(f"Saving job definitions to `{args.file}...")
         with Path.open(Path(args.file), "w") as f:
             yaml.safe_dump({"jobs": job_definitions}, stream=f, encoding="utf-8", sort_keys=True)

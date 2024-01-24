@@ -9,12 +9,20 @@ jobs:
       name: Job with id specified
       project_id: 123
       schedule: # TODO: prevent this from being NULL, dbt Cloud forces default value
-          cron: 0 * * * *
+          cron: 0 */2 * * 0,1,2,3,4,5,6
           date:
-              type: every_day
+              days:
+                  - 0
+                  - 1
+                  - 2
+                  - 3
+                  - 4
+                  - 5
+                  - 6
+              type: days_of_week
           time:
+              interval: 2
               type: every_hour
-              interval: 1
       settings:
           threads: 1
           target_name: default

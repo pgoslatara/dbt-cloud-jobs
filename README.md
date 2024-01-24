@@ -36,7 +36,7 @@ pip install dbt-cloud-jobs
 1. Import your existing dbt Cloud jobs:
 
     ```bash
-    dbt_cloud_jobs --import --account_id 123456 --file dbt_cloud_jobs.yml
+    dbt_cloud_jobs --import --account-id 123456 --file dbt_cloud_jobs.yml
     ```
 
 1. Edit the definition of your jobs in `dbt_cloud_jobs.yml`.
