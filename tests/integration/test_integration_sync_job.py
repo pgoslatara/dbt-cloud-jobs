@@ -1,7 +1,6 @@
-from pytest_helpers import hydrate_job_definition
-
 from dbt_cloud_jobs.dbt_api_helpers import create_dbt_cloud_job
 from dbt_cloud_jobs.sync_job import sync_dbt_cloud_job
+from tests.pytest_helpers import hydrate_job_definition
 
 
 def test_sync_dbt_cloud_job_new_job(caplog, file_job_minimal_definition) -> None:

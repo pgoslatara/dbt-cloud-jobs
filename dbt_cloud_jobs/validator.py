@@ -3,7 +3,14 @@ from pathlib import Path
 from typing import List, Literal, Optional, Set, Union
 
 import yaml
-from pydantic import BaseModel, Extra, Field, StrictBool, root_validator, validator
+from pydantic import (  # type: ignore[import-not-found]
+    BaseModel,
+    Extra,
+    Field,
+    StrictBool,
+    root_validator,
+    validator,
+)
 
 from dbt_cloud_jobs.logger import logger
 

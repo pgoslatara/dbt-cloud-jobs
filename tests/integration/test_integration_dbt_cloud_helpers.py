@@ -1,12 +1,11 @@
 import os
 
-from pytest_helpers import hydrate_job_definition
-
 from dbt_cloud_jobs.dbt_api_helpers import (
     create_dbt_cloud_job,
     delete_dbt_cloud_job,
     list_dbt_cloud_jobs,
 )
+from tests.pytest_helpers import hydrate_job_definition
 
 
 def test_create_dbt_cloud_job(file_job_minimal_definition) -> None:
@@ -35,5 +34,5 @@ def test_delete_dbt_cloud_job(file_job_minimal_definition) -> None:
 
 
 def test_list_dbt_cloud_jobs() -> None:
-    existing_jobs = list_dbt_cloud_jobs(os.getenv("DBT_ACCOUNT_ID"))
+    existing_jobs = list_dbt_cloud_jobs(int(os.environ["DBT_ACCOUNT_ID"]))
     assert isinstance(existing_jobs, list)

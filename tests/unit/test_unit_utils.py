@@ -1,6 +1,6 @@
 import pytest
 
-from dbt_cloud_jobs.utils import merge_dicts
+from dbt_cloud_jobs.utils import merge_job_definitions
 
 
 @pytest.mark.parametrize(
@@ -33,4 +33,4 @@ from dbt_cloud_jobs.utils import merge_dicts
     ],
 )
 def test_merge_dicts(dict_1, dict_2, merged_dict) -> None:
-    assert merge_dicts(dict_1=dict_1, dict_2=dict_2) == merged_dict
+    assert merge_job_definitions(job_def_1=dict_1, job_def_2=dict_2) == merged_dict
