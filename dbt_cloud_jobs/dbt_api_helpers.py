@@ -1,6 +1,6 @@
 import os
 from functools import lru_cache
-from typing import Any, Literal, Mapping, Optional, Union
+from typing import Any, Dict, Literal, Mapping, Optional, Union
 
 import requests
 from requests import HTTPError
@@ -32,7 +32,7 @@ def call_dbt_cloud_api(
     endpoint: str,
     params: Optional[Mapping[str, Union[float, int, str]]] = None,
     payload: Optional[Mapping[str, Union[float, int, str]]] = None,
-) -> Union[DbtCloudJobDefinition, dict[Any, object]]:
+) -> Union[DbtCloudJobDefinition, Dict[Any, object]]:
     """
     A helper function for calling the dbt Cloud API.
 
