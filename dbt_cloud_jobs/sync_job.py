@@ -1,15 +1,14 @@
-from typing import Mapping, Union
-
 from dbt_cloud_jobs.dbt_api_helpers import (
     call_dbt_cloud_api,
     create_dbt_cloud_job,
     list_dbt_cloud_jobs,
 )
 from dbt_cloud_jobs.logger import logger
-from dbt_cloud_jobs.utils import merge_dicts
+from dbt_cloud_jobs.utils import merge_job_definitions
+from dbt_cloud_jobs.validator import DbtCloudJobDefinition
 
 
-def sync_dbt_cloud_job(definition: Mapping[str, Union[int, str]]) -> None:
+def sync_dbt_cloud_job(definition: DbtCloudJobDefinition) -> None:
     existing_jobs = list_dbt_cloud_jobs(
         account_id=definition["account_id"]
     )  # TODO: move outside function or else cache results
@@ -25,7 +24,7 @@ def sync_dbt_cloud_job(definition: Mapping[str, Union[int, str]]) -> None:
         if not definition.get("id"):
             definition["id"] = existing_definition["id"]
 
-        updated_definition = merge_dicts(existing_definition, definition)
+        updated_definition = merge_job_definitions(existing_definition, definition)
         logger.debug(f"{updated_definition=}")
         if updated_definition == existing_definition:
             logger.info(

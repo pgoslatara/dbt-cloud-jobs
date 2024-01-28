@@ -1,4 +1,5 @@
 import os
+from typing import Dict
 
 import pytest
 from pytest import MonkeyPatch
@@ -14,9 +15,9 @@ def test_dbt_cloud_api_connection() -> None:
     Test that the dbt Cloud API can be reached
     """
 
-    response = call_dbt_cloud_api(
+    response: Dict[str, Dict[str, str]] = call_dbt_cloud_api(
         method="get", endpoint=f'accounts/{os.getenv("DBT_ACCOUNT_ID")}/projects/'
-    )
+    )  # type: ignore[assignment]
     assert response["status"]["is_success"]
 
 
@@ -66,6 +67,6 @@ def test_get_dbt_cloud_api_base_url_valid(dbt_cloud_region, base_url):
 )
 def test_required_env_vars_are_set(env_var_name) -> None:
     try:
-        int(os.getenv(env_var_name))
+        int(os.environ[env_var_name])
     except:
         raise RuntimeError(f"{env_var_name} must be set as a integer.")

@@ -2,16 +2,17 @@ import logging
 import os
 from contextlib import contextmanager
 from random import random
-from typing import List, Tuple
+from typing import Generator, List, Tuple
 
 from _pytest.logging import LogCaptureHandler
 
 from dbt_cloud_jobs.utils import job_prefix
+from dbt_cloud_jobs.validator import DbtCloudJobDefinition, DbtCloudJobDefinitionsFile
 
 
 # Source: https://github.com/pytest-dev/pytest/issues/3697#issuecomment-792129636
 @contextmanager
-def catch_logs(level: int, logger: logging.Logger) -> LogCaptureHandler:
+def catch_logs(level: int, logger: logging.Logger) -> Generator[LogCaptureHandler, None, None]:
     """Context manager that sets the level for capturing of logs.
 
     After the end of the 'with' statement the level is restored to its original value.
@@ -30,12 +31,12 @@ def catch_logs(level: int, logger: logging.Logger) -> LogCaptureHandler:
         logger.removeHandler(handler)
 
 
-def hydrate_job_definition(definition: dict) -> dict:  # TODO: pydantic class
+def hydrate_job_definition(definition: DbtCloudJobDefinition) -> DbtCloudJobDefinitionsFile:
     definition = definition.copy()
-    definition["account_id"] = int(os.getenv("DBT_ACCOUNT_ID"))
-    definition["environment_id"] = int(os.getenv("DBT_ENVIRONMENT_ID"))
+    definition["account_id"] = int(os.environ["DBT_ACCOUNT_ID"])
+    definition["environment_id"] = int(os.environ["DBT_ENVIRONMENT_ID"])
     definition["name"] = f"{job_prefix()}_{definition['name']}_{int(random() * 1000000)}"
-    definition["project_id"] = int(os.getenv("DBT_PROJECT_ID"))
+    definition["project_id"] = int(os.environ["DBT_PROJECT_ID"])
     return definition
 
 

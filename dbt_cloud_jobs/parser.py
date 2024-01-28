@@ -4,7 +4,7 @@ import inspect
 from dbt_cloud_jobs.logger import logger
 
 
-def parse_args(args):
+def parse_args(args: argparse.Namespace):
     parser = argparse.ArgumentParser(description="Create dbt Cloud jobs from a YML file.")
     parser.add_argument(
         "--account-id",
@@ -48,7 +48,7 @@ def parse_args(args):
 
     # Determining how function is called
     if (
-        inspect.stack()[2].code_context[0].strip() == "sys.exit(main())"
+        inspect.stack()[2].code_context[0].strip() == "sys.exit(main())"  # type: ignore[index]
     ):  # Not true when pytest calls main()
         args = parser.parse_args()
         caller = "cli"

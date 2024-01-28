@@ -1,12 +1,14 @@
 import os
 from functools import lru_cache
-from typing import List, Literal, Mapping, Optional, Union
+from typing import Any, Literal, Mapping, Optional, Union
 
 import requests
 from requests import HTTPError
 from requests.auth import AuthBase
+from requests.structures import CaseInsensitiveDict
 
 from dbt_cloud_jobs.logger import logger
+from dbt_cloud_jobs.validator import DbtCloudJobDefinition, DbtCloudJobDefinitionsFile
 
 
 class DbtCloudAuth(AuthBase):
@@ -14,21 +16,23 @@ class DbtCloudAuth(AuthBase):
     Create a base object that can be used to authenticate to the dbt Cloud API.
     """
 
-    def __call__(self, r):
-        r.headers = {
-            "Accept": "application/json",
-            "Authorization": f'Token {os.getenv("DBT_API_TOKEN")}',
-            "Content-Type": "application/json",
-        }
+    def __call__(self, r: requests.models.PreparedRequest):
+        r.headers = CaseInsensitiveDict(
+            {
+                "Accept": "application/json",
+                "Authorization": f'Token {os.getenv("DBT_API_TOKEN")}',
+                "Content-Type": "application/json",
+            }
+        )
         return r
 
 
 def call_dbt_cloud_api(
     method: Literal["delete", "get", "post"],
     endpoint: str,
-    params: Optional[Mapping[str, Union[int, str]]] = None,
-    payload: Optional[Mapping[str, Union[int, str]]] = None,
-) -> Mapping[str, Union[int, str]]:
+    params: Optional[Mapping[str, Union[float, int, str]]] = None,
+    payload: Optional[Mapping[str, Union[float, int, str]]] = None,
+) -> Union[DbtCloudJobDefinition, dict[Any, object]]:
     """
     A helper function for calling the dbt Cloud API.
 
@@ -74,20 +78,24 @@ def call_dbt_cloud_api(
     return r.json()
 
 
-def create_dbt_cloud_job(definition) -> int:  # TODO pydantic class for definition
+def create_dbt_cloud_job(
+    definition: DbtCloudJobDefinition,
+) -> int:  # TODO pydantic class for definition
     # New jobs require an "id" key in the payload, even though the value of this key does not yet exist
     definition["id"] = None
 
     logger.debug(f"{definition=}")
-    r = call_dbt_cloud_api(
+    r: DbtCloudJobDefinition = call_dbt_cloud_api(
         method="post",
         endpoint=f"accounts/{definition['account_id']}/jobs/",
         payload=definition,
-    )
+    )[
+        "data"
+    ]  # type: ignore[assignment]
     logger.info(
-        f"Created new dbt Cloud job, URL: https://cloud.getdbt.com/deploy/{definition['account_id']}/projects/{definition['project_id']}/jobs/{r['data']['id']}"
+        f"Created new dbt Cloud job, URL: https://cloud.getdbt.com/deploy/{definition['account_id']}/projects/{definition['project_id']}/jobs/{r['id']}"
     )
-    return r["data"]["id"]
+    return r["id"]
 
 
 @lru_cache
@@ -103,7 +111,9 @@ def create_requests_session() -> requests.Session:
     return requests.Session()
 
 
-def delete_dbt_cloud_job(definition) -> None:  # TODO pydantic class for definition
+def delete_dbt_cloud_job(
+    definition: DbtCloudJobDefinition,
+) -> None:
     logger.debug(f"{definition=}")
     call_dbt_cloud_api(
         method="delete",
@@ -135,7 +145,7 @@ def get_dbt_cloud_api_base_url() -> str:
         raise RuntimeError("The env var `DBT_CLOUD_REGION` must be one of: US, Europe, AU")
 
 
-def list_dbt_cloud_jobs(account_id: int) -> List[Mapping[str, Union[int, str]]]:
+def list_dbt_cloud_jobs(account_id: int) -> DbtCloudJobDefinitionsFile:
     """
     Get a list of all existing dbt Cloud jobs
 
@@ -149,10 +159,12 @@ def list_dbt_cloud_jobs(account_id: int) -> List[Mapping[str, Union[int, str]]]:
     logger.info(f"Listing dbt Cloud jobs for account id {account_id}...")
 
     # TODO: pagination
-    jobs = call_dbt_cloud_api(
+    jobs: DbtCloudJobDefinitionsFile = call_dbt_cloud_api(
         method="get",
         endpoint=f"accounts/{account_id}/jobs/",
-    )["data"]
+    )[
+        "data"
+    ]  # type: ignore[assignment]
     logger.info(f"Found {len(jobs)} jobs...")
 
     return jobs

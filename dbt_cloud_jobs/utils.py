@@ -2,6 +2,8 @@ import sys
 from collections.abc import MutableMapping
 from functools import lru_cache
 
+from dbt_cloud_jobs.validator import DbtCloudJobDefinition
+
 
 @lru_cache
 def job_prefix() -> str:
@@ -13,19 +15,21 @@ def job_prefix() -> str:
     return f"dbt_cloud_jobs_ci_{sys.version_info[0]}_{sys.version_info[1]}_{sys.version_info[2]}"
 
 
-def merge_dicts(dict_1: dict, dict_2: dict) -> dict:
+def merge_job_definitions(
+    job_def_1: DbtCloudJobDefinition, job_def_2: DbtCloudJobDefinition
+) -> DbtCloudJobDefinition:
     """
-    Takes 2 dicts as inputs, the values in the second dict are merged into the first,
-    i.e. second dict overwrites equivalent keys in the first dict.
+    Takes 2 job definitions as inputs, the values in the second job are merged into the first,
+    i.e. second job overwrites equivalent keys in the first job.
 
     Returns:
-        dict: A single dict.
+        DbtCloudJobDefinition: A single job.
     """
-    for k, v in dict_1.items():
-        if k in dict_2:
-            if all(isinstance(e, MutableMapping) for e in (v, dict_2[k])):
-                dict_2[k] = merge_dicts(v, dict_2[k])
+    for k, v in job_def_1.items():
+        if k in job_def_2:
+            if all(isinstance(e, MutableMapping) for e in (v, job_def_2[k])):
+                job_def_2[k] = merge_job_definitions(v, job_def_2[k])
 
-    merged_dict = dict_1.copy()
-    merged_dict.update(dict_2)
-    return merged_dict
+    merged_job = job_def_1.copy()
+    merged_job.update(job_def_2)
+    return merged_job

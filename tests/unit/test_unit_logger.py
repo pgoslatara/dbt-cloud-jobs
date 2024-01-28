@@ -4,14 +4,14 @@ from pathlib import Path
 from tempfile import NamedTemporaryFile
 
 import yaml
-from pytest_helpers import catch_logs, records_to_tuples
 
 from dbt_cloud_jobs.logger import logger
 from dbt_cloud_jobs.main import main
-from tests.pytest_helpers import hydrate_job_definition
+from dbt_cloud_jobs.validator import DbtCloudJobDefinitionsFile
+from tests.pytest_helpers import catch_logs, hydrate_job_definition, records_to_tuples
 
 
-def test_logger_debug(file_job_minimal_definition: Path) -> None:
+def test_logger_debug(file_job_minimal_definition: DbtCloudJobDefinitionsFile) -> None:
     definitions = file_job_minimal_definition
 
     definition = hydrate_job_definition(definitions["jobs"][0])
@@ -36,7 +36,7 @@ def test_logger_debug(file_job_minimal_definition: Path) -> None:
         )
 
 
-def test_logger_info(caplog, file_job_minimal_definition: Path) -> None:
+def test_logger_info(caplog, file_job_minimal_definition: DbtCloudJobDefinitionsFile) -> None:
     caplog.set_level(logging.INFO)
     definitions = file_job_minimal_definition
 
@@ -50,5 +50,3 @@ def test_logger_info(caplog, file_job_minimal_definition: Path) -> None:
     main(Namespace(file=file.name, validate=True))
 
     assert "Running dbt_cloud_jobs (0.0.0)..." in caplog.text
-
-    # assert 1 ==5

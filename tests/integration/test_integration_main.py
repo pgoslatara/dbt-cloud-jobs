@@ -4,11 +4,11 @@ from pathlib import Path
 from tempfile import NamedTemporaryFile
 
 import yaml
-from pytest_helpers import hydrate_job_definition
 
 from dbt_cloud_jobs.dbt_api_helpers import list_dbt_cloud_jobs
 from dbt_cloud_jobs.logger import logger
 from dbt_cloud_jobs.main import main
+from tests.pytest_helpers import hydrate_job_definition
 
 
 def test_main_import_true(request, tmp_path):
