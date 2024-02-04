@@ -1,14 +1,14 @@
 ---
 jobs:
     - account_id: 123
-      dbt_version: # TODO: prevent being NULL
+      dbt_version:
       environment_id: 123
       execute_steps:
           - dbt run
       id: 123
       name: Job with id specified
       project_id: 123
-      schedule: # TODO: prevent this from being NULL, dbt Cloud forces default value
+      schedule:
           cron: 0 */2 * * 0,1,2,3,4,5,6
           date:
               days:
