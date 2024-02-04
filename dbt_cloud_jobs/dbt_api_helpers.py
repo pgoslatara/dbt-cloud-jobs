@@ -43,10 +43,10 @@ def call_dbt_cloud_api(
         payload (Optional[Mapping[str, Union[int, str]]], optional): _description_. Defaults to None.
 
     Raises:
-        RuntimeError: _description_
+        RuntimeError
 
     Returns:
-        Mapping[str, Union[int, str]]: _description_
+        Union[DbtCloudJobDefinition, Dict[Any, object]]
     """
 
     base_url = f"{get_dbt_cloud_api_base_url()}/api/v2/"
@@ -150,21 +150,23 @@ def list_dbt_cloud_jobs(account_id: int) -> DbtCloudJobDefinitionsFile:
     Get a list of all existing dbt Cloud jobs
 
     Args:
-        account_id (int): _description_
+        account_id (int)
 
     Returns:
-        List[Mapping[str, Union[int, str]]]: _description_
+        DbtCloudJobDefinitionsFile
     """
 
     logger.info(f"Listing dbt Cloud jobs for account id {account_id}...")
 
-    # TODO: pagination
-    jobs: DbtCloudJobDefinitionsFile = call_dbt_cloud_api(
-        method="get",
-        endpoint=f"accounts/{account_id}/jobs/",
-    )[
-        "data"
-    ]  # type: ignore[assignment]
+    jobs: DbtCloudJobDefinitionsFile = []  # type: ignore[assignment]
+    while True:
+        jobs_data = call_dbt_cloud_api(
+            method="get", endpoint=f"accounts/{account_id}/jobs/", params={"offset": len(jobs)}
+        )
+        if jobs_data["data"] == []:
+            break
+        jobs += jobs_data["data"]
+
     logger.info(f"Found {len(jobs)} jobs...")
 
     return jobs
