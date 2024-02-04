@@ -27,7 +27,7 @@ pip install dbt-cloud-jobs
     export DBT_API_TOKEN="<VALUE_FROM_PREVIOUS_STEP>"
     ```
 
-1. Set an environment variable for the region where your dbt Cloud account is hosted. The value must be one of AU, Europe or US (see docs [here](https://docs.getdbt.com/dbt-cloud/api-v2#/)):
+1. Set an environment variable for the region where your dbt Cloud account is hosted. The value must be one of "AU", "Europe" or "US" (see docs [here](https://docs.getdbt.com/dbt-cloud/api-v2#/)):
 
     ```bash
     export DBT_CLOUD_REGION="<REGION>"
@@ -51,11 +51,11 @@ pip install dbt-cloud-jobs
 
 ## CI
 
-In CI `dbt_cloud_jobs` should be used to verify that the provided YML file is valid. For example:
+In CI `dbt-cloud-jobs` should be used to verify that the provided YML file is valid. For example:
 
-```bash
+```yaml
     - name: Install dbt_cloud_jobs
-      run: pip install dbt_cloud_jobs
+      run: pip install dbt-cloud-jobs
 
     - name: Validate `dbt_cloud_jobs.yml`
       run: dbt_cloud_jobs --validate --file dbt_cloud_jobs.yml
@@ -63,21 +63,47 @@ In CI `dbt_cloud_jobs` should be used to verify that the provided YML file is va
 
 ## CD
 
-In CD `dbt_cloud_jobs` should be used to sync the provided YML file to dbt Cloud. For example:
+In CD `dbt-cloud-jobs` should be used to sync the provided YML file to dbt Cloud. For example:
 
-```bash
+```yaml
     - name: Install dbt_cloud_jobs
-      run: pip install dbt_cloud_jobs
+      run: pip install dbt-cloud-jobs
 
     - name: Sync `dbt_cloud_jobs.yml`
       run: dbt_cloud_jobs --sync --file dbt_cloud_jobs.yml
 ```
 
+# Limitations
+
+Service account tokens are created at the account level. This means that if you have multiple dbt Cloud accounts you will need to create different `dbt_cloud_jobs.yml` files for each account. If you try to use `dbt-cloud-jobs` with a file that contains multiple `account_id` values, an error will be raised.
+
 # Development
+
+To setup your development environment, fork this repository and run:
+
+```bash
+poetry shell
+poetry install
+```
+
+Set the following environment variables:
+```bash
+export DBT_ACCOUNT_ID=<DBT_ACCOUNT_ID>
+export DBT_CLOUD_REGION="<DBT_CLOUD_REGION>"
+export DBT_ENVIRONMENT_ID=<DBT_ENVIRONMENT_ID>
+export DBT_PROJECT_ID=<DBT_PROJECT_ID>
+export DBT_API_TOKEN="<DBT_API_TOKEN>"
+```
+It is highly recommended that a dedicated dbt Cloud environment be used for development.
+
+All tests can be run via:
+```bash
+make test
+```
 
 # Release
 
-Trigger the `Publish` workflow, inputting the version to publish to PyPi. This workflow will:
+Trigger the `Publish to PyPi` workflow, inputting the version to publish to PyPi. This workflow will:
 
 - Publish the version to [PyPi](https://pypi.org/project/dbt-cloud-jobs/).
 - Tag the HEAD commit of the `main` branches (tags visible [here](https://github.com/pgoslatara/dbt-cloud-jobs/tags)).
