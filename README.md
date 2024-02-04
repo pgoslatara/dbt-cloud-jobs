@@ -27,7 +27,7 @@ pip install dbt-cloud-jobs
     export DBT_API_TOKEN="<VALUE_FROM_PREVIOUS_STEP>"
     ```
 
-1. Set an environment variable for the region where your dbt Cloud account is hosted. The value must be one of AU, Europe or US (see docs [here](https://docs.getdbt.com/dbt-cloud/api-v2#/)):
+1. Set an environment variable for the region where your dbt Cloud account is hosted. The value must be one of "AU", "Europe" or "US" (see docs [here](https://docs.getdbt.com/dbt-cloud/api-v2#/)):
 
     ```bash
     export DBT_CLOUD_REGION="<REGION>"
@@ -51,11 +51,11 @@ pip install dbt-cloud-jobs
 
 ## CI
 
-In CI `dbt_cloud_jobs` should be used to verify that the provided YML file is valid. For example:
+In CI `dbt-cloud-jobs` should be used to verify that the provided YML file is valid. For example:
 
-```bash
+```yaml
     - name: Install dbt_cloud_jobs
-      run: pip install dbt_cloud_jobs
+      run: pip install dbt-cloud-jobs
 
     - name: Validate `dbt_cloud_jobs.yml`
       run: dbt_cloud_jobs --validate --file dbt_cloud_jobs.yml
@@ -63,11 +63,11 @@ In CI `dbt_cloud_jobs` should be used to verify that the provided YML file is va
 
 ## CD
 
-In CD `dbt_cloud_jobs` should be used to sync the provided YML file to dbt Cloud. For example:
+In CD `dbt-cloud-jobs` should be used to sync the provided YML file to dbt Cloud. For example:
 
-```bash
+```yaml
     - name: Install dbt_cloud_jobs
-      run: pip install dbt_cloud_jobs
+      run: pip install dbt-cloud-jobs
 
     - name: Sync `dbt_cloud_jobs.yml`
       run: dbt_cloud_jobs --sync --file dbt_cloud_jobs.yml
@@ -103,7 +103,7 @@ make test
 
 # Release
 
-Trigger the `Publish` workflow, inputting the version to publish to PyPi. This workflow will:
+Trigger the `Publish to PyPi` workflow, inputting the version to publish to PyPi. This workflow will:
 
 - Publish the version to [PyPi](https://pypi.org/project/dbt-cloud-jobs/).
 - Tag the HEAD commit of the `main` branches (tags visible [here](https://github.com/pgoslatara/dbt-cloud-jobs/tags)).
