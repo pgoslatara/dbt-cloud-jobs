@@ -1,7 +1,7 @@
 ---
 jobs:
     - account_id: 123
-      dbt_version: # TODO: prevent being NULL
+      dbt_version:
       environment_id: 123
       execute_steps:
           - dbtrun
@@ -10,7 +10,7 @@ jobs:
       name: Job with non-dbt command
       project_id: 123
       run_generate_sources: false
-      schedule: # TODO: prevent this from being NULL, dbt Cloud forces default value
+      schedule:
           cron: 0 * * * *
           date:
               type: every_day

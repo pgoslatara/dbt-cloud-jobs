@@ -1,7 +1,7 @@
 ---
 jobs:
     - account_id: 123
-      dbt_version: # TODO: prevent being NULL
+      dbt_version:
       environment_id: 123
       execute_steps:
           - dbt run
