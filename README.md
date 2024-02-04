@@ -79,6 +79,28 @@ Service account tokens are created at the account level. This means that if you 
 
 # Development
 
+To setup your development environment, fork this repository and run:
+
+```bash
+poetry shell
+poetry install
+```
+
+Set the following environment variables:
+```bash
+export DBT_ACCOUNT_ID=<DBT_ACCOUNT_ID>
+export DBT_CLOUD_REGION="<DBT_CLOUD_REGION>"
+export DBT_ENVIRONMENT_ID=<DBT_ENVIRONMENT_ID>
+export DBT_PROJECT_ID=<DBT_PROJECT_ID>
+export DBT_API_TOKEN="<DBT_API_TOKEN>"
+```
+It is highly recommended that a dedicated dbt Cloud environment be used for development.
+
+All tests can be run via:
+```bash
+make test
+```
+
 # Release
 
 Trigger the `Publish` workflow, inputting the version to publish to PyPi. This workflow will:
