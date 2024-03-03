@@ -23,7 +23,7 @@ def main(args=None) -> None:
     # Verify supplied arguments are valid
     if args.account_id is None and args.import_:
         raise DbtCloudJobsInvalidArguments(
-            "`--account_id` must be passed when `--import` is passed."
+            "`--account-id` must be passed when `--import` is passed."
         )
     elif sum([args.import_, args.validate, args.sync]) == 0:
         raise DbtCloudJobsInvalidArguments(
