@@ -34,6 +34,11 @@ def parse_args(args: argparse.Namespace):
         help="When passed as a flag, any dbt Cloud job will be saved to a file specified by the `--file` parameter.",
     )
     parser.add_argument(
+        "--project-id",
+        help="The dbt Cloud project ID, only used when `--import` is passed.",
+        type=int,
+    )
+    parser.add_argument(
         "--validate",
         action="store_true",
         default=False,

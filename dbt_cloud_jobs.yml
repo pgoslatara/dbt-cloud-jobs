@@ -1,0 +1,110 @@
+---
+jobs:
+    - account_id: 12893
+      created_at: '2024-03-05T08:34:41.661859+00:00'
+      cron_humanized: Every 12 hours, only on Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, and Saturday
+      dbt_version:
+      deactivated: false
+      deferring_environment_id:
+      deferring_job_definition_id:
+      description: ''
+      environment_id: 299268
+      execute_steps:
+          - dbt build
+      execution:
+          timeout_seconds: 0
+      generate_docs: false
+      generate_sources: false
+      id: 545183
+      is_deferrable: false
+      job_completion_trigger_condition:
+      job_type: other
+      lifecycle_webhooks: false
+      lifecycle_webhooks_url:
+      name: Daily job
+      next_run:
+      next_run_humanized:
+      project_id: 355308
+      raw_dbt_version:
+      run_audit_helper: false
+      run_failure_count: 0
+      run_generate_sources: false
+      schedule:
+          cron: 0 */12 * * 0,1,2,3,4,5,6
+          date:
+              days:
+                  - 0
+                  - 1
+                  - 2
+                  - 3
+                  - 4
+                  - 5
+                  - 6
+              type: days_of_week
+          time:
+              interval: 12
+              type: every_hour
+      settings:
+          target_name: default
+          threads: 4
+      state: 1
+      triggers:
+          git_provider_webhook: false
+          github_webhook: false
+          schedule: false
+      triggers_on_draft_pr: false
+      updated_at: '2024-03-05T08:34:41.661877+00:00'
+    - account_id: 12893
+      created_at: '2024-03-05T08:42:22.875788+00:00'
+      cron_humanized: Every 12 hours, only on Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, and Saturday
+      dbt_version:
+      deactivated: false
+      deferring_environment_id:
+      deferring_job_definition_id:
+      description: ''
+      environment_id: 299285
+      execute_steps:
+          - dbt build --select state:modified+
+      execution:
+          timeout_seconds: 0
+      generate_docs: false
+      generate_sources: false
+      id: 545220
+      is_deferrable: false
+      job_completion_trigger_condition:
+      job_type: ci
+      lifecycle_webhooks: false
+      lifecycle_webhooks_url:
+      name: CI job
+      next_run:
+      next_run_humanized:
+      project_id: 355308
+      raw_dbt_version:
+      run_audit_helper: false
+      run_failure_count: 0
+      run_generate_sources: false
+      schedule:
+          cron: 0 */12 * * 0,1,2,3,4,5,6
+          date:
+              days:
+                  - 0
+                  - 1
+                  - 2
+                  - 3
+                  - 4
+                  - 5
+                  - 6
+              type: days_of_week
+          time:
+              interval: 12
+              type: every_hour
+      settings:
+          target_name: default
+          threads: 4
+      state: 1
+      triggers:
+          git_provider_webhook: false
+          github_webhook: false
+          schedule: false
+      triggers_on_draft_pr: false
+      updated_at: '2024-03-05T08:42:22.875805+00:00'
