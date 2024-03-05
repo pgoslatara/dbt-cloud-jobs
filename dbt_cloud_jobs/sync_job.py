@@ -9,7 +9,9 @@ from dbt_cloud_jobs.validator import DbtCloudJobDefinition
 
 
 def sync_dbt_cloud_job(definition: DbtCloudJobDefinition) -> None:
-    existing_jobs = list_dbt_cloud_jobs(account_id=definition["account_id"])
+    existing_jobs = list_dbt_cloud_jobs(
+        account_id=definition["account_id"], project_id=definition["project_id"]
+    )
 
     # Jobs that are new or need updating
     if definition["name"] in [job["name"] for job in existing_jobs]:

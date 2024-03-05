@@ -21,9 +21,9 @@ def main(args=None) -> None:
     args, caller = parse_args(args)
 
     # Verify supplied arguments are valid
-    if args.account_id is None and args.import_:
+    if (args.account_id is None or args.project_id is None) and args.import_:
         raise DbtCloudJobsInvalidArguments(
-            "`--account_id` must be passed when `--import` is passed."
+            "`--account-id` and `--project-id` must be passed when `--import` is passed."
         )
     elif sum([args.import_, args.validate, args.sync]) == 0:
         raise DbtCloudJobsInvalidArguments(
@@ -48,7 +48,7 @@ def main(args=None) -> None:
                 f"{args.file} already exists, please choose a different file name."
             )
 
-        job_definitions = list_dbt_cloud_jobs(args.account_id)
+        job_definitions = list_dbt_cloud_jobs(args.account_id, args.project_id)
 
         logger.info(f"Saving job definitions to `{args.file}...")
         with Path.open(Path(args.file), "w") as f:
@@ -83,8 +83,10 @@ def main(args=None) -> None:
             sync_dbt_cloud_job(definition=definition)
 
         # Remove jobs no longer present in the YML file
-        for account_id in {x["account_id"] for x in job_definitions["jobs"]}:
-            existing_jobs = list_dbt_cloud_jobs(account_id=account_id)
+        for account_id, project_id in {
+            (x["account_id"], x["project_id"]) for x in job_definitions["jobs"]
+        }:
+            existing_jobs = list_dbt_cloud_jobs(account_id=account_id, project_id=project_id)
             for job in existing_jobs:
                 if job["name"] not in [
                     job["name"]

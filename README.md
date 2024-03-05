@@ -73,9 +73,11 @@ In CD `dbt-cloud-jobs` should be used to sync the provided YML file to dbt Cloud
       run: dbt_cloud_jobs --sync --file dbt_cloud_jobs.yml
 ```
 
-# Limitations
+# Limitations/Warnings
 
-Service account tokens are created at the account level. This means that if you have multiple dbt Cloud accounts you will need to create different `dbt_cloud_jobs.yml` files for each account. If you try to use `dbt-cloud-jobs` with a file that contains multiple `account_id` values, an error will be raised.
+* Service account tokens are created at the account level. This means that if you have multiple dbt Cloud accounts you will need to create different `dbt_cloud_jobs.yml` files for each account. If you try to use `dbt-cloud-jobs` with a file that contains multiple `account_id` values, an error will be raised.
+
+* ⚠️ `dbt_cloud_jobs` expects to "own" all the jobs in the projects where it is used. This means that if you are running `dbt_cloud_jobs --sync --file dbt_cloud_jobs.yml` for the first time in a project, any pre-existing jobs not present in your `dbt_cloud_jobs.yml` file will be deleted.
 
 # Development
 

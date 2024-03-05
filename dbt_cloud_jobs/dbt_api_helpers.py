@@ -145,12 +145,13 @@ def get_dbt_cloud_api_base_url() -> str:
         raise RuntimeError("The env var `DBT_CLOUD_REGION` must be one of: US, Europe, AU")
 
 
-def list_dbt_cloud_jobs(account_id: int) -> DbtCloudJobDefinitionsFile:
+def list_dbt_cloud_jobs(account_id: int, project_id: int) -> DbtCloudJobDefinitionsFile:
     """
     Get a list of all existing dbt Cloud jobs
 
     Args:
         account_id (int)
+        project_id (int)
 
     Returns:
         DbtCloudJobDefinitionsFile
@@ -161,7 +162,9 @@ def list_dbt_cloud_jobs(account_id: int) -> DbtCloudJobDefinitionsFile:
     jobs: DbtCloudJobDefinitionsFile = []  # type: ignore[assignment]
     while True:
         jobs_data = call_dbt_cloud_api(
-            method="get", endpoint=f"accounts/{account_id}/jobs/", params={"offset": len(jobs)}
+            method="get",
+            endpoint=f"accounts/{account_id}/jobs/",
+            params={"offset": len(jobs), "project_id": project_id},
         )
         if jobs_data["data"] == []:
             break

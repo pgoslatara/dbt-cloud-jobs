@@ -16,7 +16,14 @@ def test_main_import_true(request, tmp_path):
     assert file.exists() is False
 
     logger.info("Calling main() with import=True...")
-    main(Namespace(account_id=os.getenv("DBT_ACCOUNT_ID"), file=file, import_=True))
+    main(
+        Namespace(
+            account_id=os.getenv("DBT_ACCOUNT_ID"),
+            file=file,
+            import_=True,
+            project_id=os.getenv("DBT_PROJECT_ID"),
+        )
+    )
 
     assert file.exists()
 
@@ -40,7 +47,10 @@ def test_main_sync_false(caplog, file_job_minimal_definition):
     main(Namespace(file=file.name, validate=True, sync=False))
 
     assert definition["name"] not in [
-        x["name"] for x in list_dbt_cloud_jobs(account_id=definition["account_id"])
+        x["name"]
+        for x in list_dbt_cloud_jobs(
+            account_id=definition["account_id"], project_id=definition["project_id"]
+        )
     ]
     assert f"Pass `--sync` to sync the jobs defined in `{file.name}` to dbt Cloud." in caplog.text
 
@@ -63,10 +73,16 @@ def test_main_sync_remove_job_allow_deletes_false(caplog, file_job_minimal_defin
     main(Namespace(allow_deletes=False, file=file.name, sync=True))
 
     assert definition_1["name"] in [
-        x["name"] for x in list_dbt_cloud_jobs(account_id=definition_1["account_id"])
+        x["name"]
+        for x in list_dbt_cloud_jobs(
+            account_id=definition_1["account_id"], project_id=definition_1["project_id"]
+        )
     ]
     assert definition_2["name"] in [
-        x["name"] for x in list_dbt_cloud_jobs(account_id=definition_2["account_id"])
+        x["name"]
+        for x in list_dbt_cloud_jobs(
+            account_id=definition_2["account_id"], project_id=definition_2["project_id"]
+        )
     ]
     assert f"Using definitions files: {file.name}" in caplog.text
     assert f"Found definitions for 2 job(s)." in caplog.text
@@ -74,7 +90,9 @@ def test_main_sync_remove_job_allow_deletes_false(caplog, file_job_minimal_defin
     # Remove job from YML and call main() again
     definition_2_job_id = [
         x["id"]
-        for x in list_dbt_cloud_jobs(account_id=definition_2["account_id"])
+        for x in list_dbt_cloud_jobs(
+            account_id=definition_2["account_id"], project_id=definition_2["project_id"]
+        )
         if x["name"] == definition_2["name"]
     ][0]
     file = NamedTemporaryFile()
@@ -89,18 +107,30 @@ def test_main_sync_remove_job_allow_deletes_false(caplog, file_job_minimal_defin
     main(Namespace(allow_deletes=False, file=file.name, sync=True))
 
     assert definition_1["name"] in [
-        x["name"] for x in list_dbt_cloud_jobs(account_id=definition_1["account_id"])
+        x["name"]
+        for x in list_dbt_cloud_jobs(
+            account_id=definition_1["account_id"], project_id=definition_1["project_id"]
+        )
     ]
     assert definition_2["name"] in [
-        x["name"] for x in list_dbt_cloud_jobs(account_id=definition_2["account_id"])
+        x["name"]
+        for x in list_dbt_cloud_jobs(
+            account_id=definition_2["account_id"], project_id=definition_2["project_id"]
+        )
     ]
     assert f"Using definitions files: {file.name}" in caplog.text
     assert f"Found definitions for 1 job(s)." in caplog.text
     assert definition_1["name"] in [
-        x["name"] for x in list_dbt_cloud_jobs(account_id=definition_1["account_id"])
+        x["name"]
+        for x in list_dbt_cloud_jobs(
+            account_id=definition_1["account_id"], project_id=definition_1["project_id"]
+        )
     ]
     assert definition_2["name"] in [
-        x["name"] for x in list_dbt_cloud_jobs(account_id=definition_2["account_id"])
+        x["name"]
+        for x in list_dbt_cloud_jobs(
+            account_id=definition_2["account_id"], project_id=definition_2["project_id"]
+        )
     ]
     assert (
         f"Job `{definition_2['name']}` (id: {definition_2_job_id}) exists in dbt Cloud but not in `{file.name}`. Pass `--allow-deletes` to delete this job from dbt Cloud."
@@ -123,10 +153,16 @@ def test_main_sync_remove_job_allow_deletes_true(caplog, file_job_minimal_defini
     main(Namespace(allow_deletes=False, file=file.name, sync=True))
 
     assert definition_1["name"] in [
-        x["name"] for x in list_dbt_cloud_jobs(account_id=definition_1["account_id"])
+        x["name"]
+        for x in list_dbt_cloud_jobs(
+            account_id=definition_1["account_id"], project_id=definition_1["project_id"]
+        )
     ]
     assert definition_2["name"] in [
-        x["name"] for x in list_dbt_cloud_jobs(account_id=definition_2["account_id"])
+        x["name"]
+        for x in list_dbt_cloud_jobs(
+            account_id=definition_2["account_id"], project_id=definition_2["project_id"]
+        )
     ]
     assert f"Using definitions files: {file.name}" in caplog.text
     assert f"Found definitions for 2 job(s)." in caplog.text
@@ -134,7 +170,9 @@ def test_main_sync_remove_job_allow_deletes_true(caplog, file_job_minimal_defini
     # Remove job from YML and call main() again
     definition_2_job_id = [
         x["id"]
-        for x in list_dbt_cloud_jobs(account_id=definition_2["account_id"])
+        for x in list_dbt_cloud_jobs(
+            account_id=definition_2["account_id"], project_id=definition_2["project_id"]
+        )
         if x["name"] == definition_2["name"]
     ][0]
     file = NamedTemporaryFile()
@@ -149,10 +187,16 @@ def test_main_sync_remove_job_allow_deletes_true(caplog, file_job_minimal_defini
     main(Namespace(allow_deletes=True, file=file.name, sync=True))
 
     assert definition_1["name"] in [
-        x["name"] for x in list_dbt_cloud_jobs(account_id=definition_1["account_id"])
+        x["name"]
+        for x in list_dbt_cloud_jobs(
+            account_id=definition_1["account_id"], project_id=definition_1["project_id"]
+        )
     ]
     assert definition_2["name"] not in [
-        x["name"] for x in list_dbt_cloud_jobs(account_id=definition_2["account_id"])
+        x["name"]
+        for x in list_dbt_cloud_jobs(
+            account_id=definition_2["account_id"], project_id=definition_2["project_id"]
+        )
     ]
     assert f"Using definitions files: {file.name}" in caplog.text
     assert f"Found definitions for 1 job(s)." in caplog.text
@@ -176,7 +220,10 @@ def test_main_sync_simple_job(caplog, file_job_minimal_definition):
     main(Namespace(allow_deletes=False, file=file.name, sync=True))
 
     assert definition["name"] in [
-        x["name"] for x in list_dbt_cloud_jobs(account_id=definition["account_id"])
+        x["name"]
+        for x in list_dbt_cloud_jobs(
+            account_id=definition["account_id"], project_id=definition["project_id"]
+        )
     ]
     assert f"Using definitions files: {file.name}" in caplog.text
     assert f"Found definitions for 1 job(s)." in caplog.text
@@ -196,5 +243,8 @@ def test_main_sync_true(file_job_minimal_definition):
     main(Namespace(file=file.name, sync=True))
 
     assert definition["name"] in [
-        x["name"] for x in list_dbt_cloud_jobs(account_id=definition["account_id"])
+        x["name"]
+        for x in list_dbt_cloud_jobs(
+            account_id=definition["account_id"], project_id=definition["project_id"]
+        )
     ]

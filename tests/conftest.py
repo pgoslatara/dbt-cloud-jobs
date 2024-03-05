@@ -20,6 +20,8 @@ def file_job_minimal_definition() -> DbtCloudJobDefinitionsFile:
 
 def pytest_sessionfinish(session, exitstatus):
     logger.info("Running cleanup after pytest...")
-    for job in list_dbt_cloud_jobs(account_id=int(os.environ["DBT_ACCOUNT_ID"])):
+    for job in list_dbt_cloud_jobs(
+        account_id=int(os.environ["DBT_ACCOUNT_ID"]), project_id=int(os.environ["DBT_PROJECT_ID"])
+    ):
         if job["name"].startswith(job_prefix()):
             delete_dbt_cloud_job(job)
