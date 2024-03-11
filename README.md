@@ -73,6 +73,16 @@ In CD `dbt-cloud-jobs` should be used to sync the provided YML file to dbt Cloud
       run: dbt_cloud_jobs --sync --file dbt_cloud_jobs.yml
 ```
 
+## Example
+
+For an example of how this package can be used, take a look at [`dbt-cloud-jobs-example-repo`](https://github.com/pgoslatara/dbt-cloud-jobs-example-repo), specifically:
+
+* The [`dbt_cloud_jobs.yml`](https://github.com/pgoslatara/dbt-cloud-jobs-example-repo/blob/main/dbt_cloud_jobs.yml) file.
+* The [CI pipeline](https://github.com/pgoslatara/dbt-cloud-jobs-example-repo/blob/main/.github/workflows/ci_pipeline.yml).
+* The [CD pipeline](https://github.com/pgoslatara/dbt-cloud-jobs-example-repo/blob/main/.github/workflows/cd_pipeline.yml).
+* This [CI pipeline](https://github.com/pgoslatara/dbt-cloud-jobs-example-repo/actions/runs/8238754815/job/22530416583) run that validated the jobs definitions added in [PR1](https://github.com/pgoslatara/dbt-cloud-jobs-example-repo/pull/1).
+* This [CD pipeline](https://github.com/pgoslatara/dbt-cloud-jobs-example-repo/actions/runs/8238763252/job/22530445750) run that updated the `Daily job` dbt Cloud job.
+
 # Limitations/Warnings
 
 * Service account tokens are created at the account level. This means that if you have multiple dbt Cloud accounts you will need to create different `dbt_cloud_jobs.yml` files for each account. If you try to use `dbt-cloud-jobs` with a file that contains multiple `account_id` values, an error will be raised.
