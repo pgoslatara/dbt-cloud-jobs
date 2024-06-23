@@ -5,11 +5,12 @@ from typing import List, Literal, Optional, Set, Union
 import yaml
 from pydantic import (  # type: ignore[import-not-found]
     BaseModel,
-    Extra,
+    ConfigDict,
     Field,
     StrictBool,
-    root_validator,
-    validator,
+    ValidationInfo,
+    field_validator,
+    model_validator,
 )
 
 from dbt_cloud_jobs.logger import logger
@@ -34,13 +35,29 @@ class DbtCloudJobScheduleDateCron(BaseModel):
 
 
 class DbtCloudJobScheduleDate(BaseModel):
-    days: Set[int] = Field(description="Days of the week, 0=Sunday.", ge=0, le=6)
+    days: Set[int] = Field(description="Days of the week, 0=Sunday.")
     type: Literal["days_of_week"]
+
+    @field_validator("days")
+    @classmethod
+    def validate_days(cls, values: Set[int], info: ValidationInfo):
+        if info.field_name == "days":
+            for x in values:
+                assert 0 <= x <= 6, f"Days value of {x} is not >= 0 and <= 6"
+        return values
 
 
 class DbtCloudJobScheduleDateHoursOfTheDay(BaseModel):
-    days: Set[int] = Field(description="Days of the week, 0=Sunday.", ge=0, le=6)
+    days: Set[int] = Field(description="Days of the week, 0=Sunday.")
     type: Literal["days_of_week"]
+
+    @field_validator("days")
+    @classmethod
+    def validate_days(cls, values: Set[int], info: ValidationInfo):
+        if info.field_name == "days":
+            for x in values:
+                assert 0 <= x <= 6, f"Days value of {x} is not >= 0 and <= 6"
+        return values
 
 
 class DbtCloudJobScheduleTime(BaseModel):
@@ -52,9 +69,17 @@ class DbtCloudJobScheduleTime(BaseModel):
 
 class DbtCloudJobScheduleTimeHoursOfTheDay(BaseModel):
     hours: Set[int] = Field(
-        description="Hours of the day when the job will be executed, 0-indexed.", ge=0, le=23
+        description="Hours of the day when the job will be executed, 0-indexed."
     )
     type: Literal["at_exact_hours"]
+
+    @field_validator("hours")
+    @classmethod
+    def validate_hours(cls, values: Set[int], info: ValidationInfo):
+        if info.field_name == "hours":
+            for x in values:
+                assert 0 <= x <= 23, f"Hours value of {x} is not >= 0 and <= 23"
+        return values
 
 
 class DbtCloudJobSchedule(BaseModel):
@@ -94,24 +119,26 @@ class DbtCloudJobTriggers(BaseModel):
 
 class DbtCloudJobDefinition(BaseModel):
     account_id: int = Field(gt=0)
-    created_at: Optional[datetime.datetime]
-    cron_humanized: Optional[str]
+    created_at: Optional[datetime.datetime] = None
+    cron_humanized: Optional[str] = None
     dbt_version: Optional[str] = Field(
         default=None,
         description="Override the dbt version this job runs on. This will cause your job to be out of sync with the environment.",
     )
     deactivated: StrictBool = False
     deferring_environment_id: Optional[int] = Field(
+        None,
         description="Select an environment to compare code changes against. Only modified models will build and these modified models will reference upstream, unchanged models from the comparison environment.",
         gt=0,
     )
-    deferring_job_definition_id: Optional[int] = Field(gt=0)
+    deferring_job_definition_id: Optional[int] = Field(None, gt=0)
     description: Optional[str] = Field(
-        description="Add additional context about this job to help your teammates understand its purpose."
+        None,
+        description="Add additional context about this job to help your teammates understand its purpose.",
     )
     environment_id: int
     execute_steps: List[str]
-    execution: Optional[DbtCloudJobExecution]
+    execution: Optional[DbtCloudJobExecution] = None
     generate_docs: StrictBool = Field(
         default=False,
         description="Automatically generate updated project docs each time this job runs.",
@@ -120,20 +147,20 @@ class DbtCloudJobDefinition(BaseModel):
         default=False,
         description="Enables dbt source freshness as the first step of this job, without breaking subsequent steps. Same as `run_generate_sources`.",
     )
-    id: Optional[int] = Field(description="The id of the dbt Cloud job", gt=0)
+    id: Optional[int] = Field(None, description="The id of the dbt Cloud job", gt=0)
     is_deferrable: StrictBool = False
-    job_completion_trigger_condition: Optional[StrictBool]
-    job_type: Optional[Literal["ci", "other", "scheduled"]]
+    job_completion_trigger_condition: Optional[StrictBool] = None
+    job_type: Optional[Literal["ci", "other", "scheduled"]] = None
     lifecycle_webhooks: StrictBool = False
-    lifecycle_webhooks_url: Optional[str]
+    lifecycle_webhooks_url: Optional[str] = None
     name: str = Field(
         description="Consider choosing a name that's easily understood by your teammates."
     )
-    next_run: Optional[datetime.datetime]
-    next_run_humanized: Optional[str]
+    next_run: Optional[datetime.datetime] = None
+    next_run_humanized: Optional[str] = None
     project_id: int = Field(gt=0)
-    raw_dbt_version: Optional[str]
-    run_failure_count: Optional[int] = Field(ge=0)
+    raw_dbt_version: Optional[str] = None
+    run_failure_count: Optional[int] = Field(None, ge=0)
     run_generate_sources: StrictBool = Field(
         default=False,
         description="Enables dbt source freshness as the first step of this job, without breaking subsequent steps. Same as `generate_sources`.",
@@ -146,15 +173,14 @@ class DbtCloudJobDefinition(BaseModel):
         default=False,
         description="Will run when a pull request is opened in draft mode, and subsequent commits.",
     )
-    updated_at: Optional[datetime.datetime]
+    updated_at: Optional[datetime.datetime] = None
+    model_config = ConfigDict(extra="allow")
 
-    class Config:
-        extra = Extra.allow
-
-    @root_validator()
+    @model_validator(mode="after")
+    @classmethod
     def check_source_values_are_consistent(cls, values):
-        if (values["generate_sources"] is True and values["run_generate_sources"] is False) or (
-            values["generate_sources"] is False and values["run_generate_sources"] is True
+        if (values.generate_sources is True and values.run_generate_sources is False) or (
+            values.generate_sources is False and values.run_generate_sources is True
         ):
             raise ValueError(
                 "`generate_sources` and `run_generate_sources` must both contain the same value: False or True."
@@ -162,7 +188,8 @@ class DbtCloudJobDefinition(BaseModel):
         else:
             return values
 
-    @validator("execute_steps")
+    @field_validator("execute_steps")
+    @classmethod
     def dbt_command_validation(cls, cmd: List[str]) -> List[str]:
         for step in cmd:
             assert step.startswith("dbt ")
@@ -173,10 +200,11 @@ class DbtCloudJobDefinition(BaseModel):
 class DbtCloudJobDefinitionsFile(BaseModel):
     jobs: List[DbtCloudJobDefinition]
 
-    @root_validator()
+    @model_validator(mode="after")
+    @classmethod
     def account_id_values_are_consistent(cls, values):
         assert (
-            len({x.account_id for x in values["jobs"]}) == 1
+            len({x.account_id for x in values.jobs}) == 1
         ), "All jobs must have the same account_id."
 
         return values
