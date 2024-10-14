@@ -120,3 +120,7 @@ Trigger the `Publish to PyPi` workflow, inputting the version to publish to PyPi
 - Publish the version to [PyPi](https://pypi.org/project/dbt-cloud-jobs/).
 - Tag the HEAD commit of the `main` branches (tags visible [here](https://github.com/pgoslatara/dbt-cloud-jobs/tags)).
 - Create a release (releases visible [here](https://github.com/pgoslatara/dbt-cloud-jobs/releases)).
+
+# Publications
+
+* This repo formed part of a talk at Coalesce 2024: Empowering dbt developers: Self-serve dbt Cloud jobs from your dbt repo, [slides](https://docs.google.com/presentation/d/1sj3VYupQWcGvviCl2COsX0tpV5jObVM6Kawda5oIsC8/edit?pli=1#slide=id.g1e73c331b15_0_128)
