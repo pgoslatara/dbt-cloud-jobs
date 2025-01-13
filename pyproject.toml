@@ -1,3 +1,38 @@
+[project]
+authors = [{name="Padraic Slattery", email="pgoslatara@gmail.com"}]
+classifiers = [
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+  "requests",
+  "pydantic (>=2)",
+  "pyyaml"
+]
+description = "Version control your dbt Cloud jobs with YML."
+keywords = [
+  "python",
+  "cli",
+  "dbt",
+  "CI/CD",
+]
+license ="MIT"
+maintainers = [{name="Padraic Slattery", email="pgoslatara@gmail.com"}]
+name = "dbt-cloud-jobs"
+readme = "README.md"
+repository = "https://github.com/pgoslatara/dbt-cloud-jobs"
+requires-python = ">=3.8,<3.13"
+version = "0.0.0"
+
+[project.scripts]
+dbt_cloud_jobs = "dbt_cloud_jobs.main:main"
+
 [tool.black]
 line-length = 99
 include = '/project$|\.pyi?$'
@@ -29,41 +64,12 @@ check_untyped_defs = true
 no_implicit_reexport = true
 
 [tool.poetry]
-authors = ["Padraic Slattery <pgoslatara@gmail.com>"]
-classifiers = [
-  "Programming Language :: Python",
-  "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.8",
-  "Programming Language :: Python :: 3.9",
-  "Programming Language :: Python :: 3.10",
-  "Programming Language :: Python :: 3.11",
-  "Programming Language :: Python :: 3.12",
-]
-description = "Version control your dbt Cloud jobs with YML."
-keywords = [
-  "python",
-  "cli",
-  "dbt",
-  "CI/CD",
-]
-license ="MIT"
-maintainers = ["Padraic Slattery <pgoslatara@gmail.com>"]
-name = "dbt-cloud-jobs"
 packages = [
     { include = "dbt_cloud_jobs" },
 ]
-readme = "README.md"
-repository = "https://github.com/pgoslatara/dbt-cloud-jobs"
-version = "0.0.0"
+requires-poetry =">=2"
 
-[tool.poetry.dependencies]
-python = ">=3.8,<3.13"
-requests = "*"
-pydantic = ">=2"
-pyyaml = "*"
-
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 pre-commit = "^3"
 pytest = "*"
 pytest-xdist = "*"
@@ -71,11 +77,8 @@ pytest-xdist = "*"
 [tool.poetry.group.test.dependencies]
 pytest-cov = "*"
 
-[tool.poetry.scripts]
-dbt_cloud_jobs = "dbt_cloud_jobs.main:main"
-
 [tool.poetry_bumpversion.file."./dbt_cloud_jobs/version.py"]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=2.0.0"]
 build-backend = "poetry.core.masonry.api"
