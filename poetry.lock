@@ -12,9 +12,6 @@ files = [
     {file = "annotated_types-0.7.0.tar.gz", hash = "sha256:aff07c09a53a08bc8cfccb9c85b05f1aa9a2a6f23728d790723543408344ce89"},
 ]
 
-[package.dependencies]
-typing-extensions = {version = ">=4.0.0", markers = "python_version < \"3.9\""}
-
 [[package]]
 name = "certifi"
 version = "2024.12.14"
@@ -798,5 +795,5 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 
 [metadata]
 lock-version = "2.1"
-python-versions = ">=3.8,<3.13"
-content-hash = "6d36c3283a819f2d1e1e92b9d5445ad2cc6f56faab59a34ca59248cb62b86ed8"
+python-versions = ">=3.9,<3.13"
+content-hash = "c88bd67d699b8b88e62b9cae1bf3a777159fb1fe7f1ee1daa8012b5d1ce60f92"
