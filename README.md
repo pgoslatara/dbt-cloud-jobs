@@ -1,3 +1,7 @@
+⚠️ This repository is archived in favour of [dbt-jobs-as-code](https://github.com/dbt-labs/dbt-jobs-as-code).
+
+---
+
 # dbt-cloud-jobs
 
 [![pypi version shield](https://img.shields.io/pypi/v/dbt-cloud-jobs)](https://img.shields.io/pypi/v/dbt-cloud-jobs)
